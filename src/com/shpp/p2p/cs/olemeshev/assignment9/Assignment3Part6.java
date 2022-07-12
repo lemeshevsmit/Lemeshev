@@ -1,19 +1,16 @@
-package com.shpp.p2p.cs.olemeshev.assignment3;
+package com.shpp.p2p.cs.olemeshev.assignment9;
 
 import acm.graphics.GLabel;
 import acm.graphics.GLine;
 import acm.graphics.GObject;
 import acm.graphics.GRect;
 import com.shpp.cs.a.graphics.WindowProgram;
-import com.shpp.p2p.cs.olemeshev.assignment3.Helicopter;
-import com.shpp.p2p.cs.olemeshev.assignment3.Tank;
 
 import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-
 
 /**
  * This class build russian army animation and we play mini game kill them.
@@ -28,8 +25,8 @@ public class Assignment3Part6 extends WindowProgram {
      * not directly use these constants in your program; instead, use getWidth() and
      * getHeight(), which return the *exact* width and height of the window.
      */
-    public static final int APPLICATION_WIDTH = 1000;
-    public static final int APPLICATION_HEIGHT = 700;
+    public static final int APPLICATION_WIDTH = 800;
+    public static final int APPLICATION_HEIGHT = 600;
 
     // Each flag is rectangle with this width and height.
     private static final double FLAG_WIDTH = 800;
@@ -65,7 +62,7 @@ public class Assignment3Part6 extends WindowProgram {
     private static final double PAUSE_TIME = 1000.0 / 50;
 
     // time of animation, default value is 4 sec
-    private static final double TIME_OF_ANIMATION = 14;
+    private static final double TIME_OF_ANIMATION = 4;
 
     // fonts constant: type(name) and size
     private static final String FONTS_NAME = "Source Sans Pro Black";
