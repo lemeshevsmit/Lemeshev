@@ -8,5 +8,5 @@ shpp-cs-java-lib.jar
 Lemeshev.iml
 
 src/com/shpp/cs
-src/com/shpp/p2p/cs
-!*src/com/shpp/p2p/cs/olemeshev
+src/com/shpp/p2p/cs/*
+!/src/com/shpp/p2p/cs/olemeshev
