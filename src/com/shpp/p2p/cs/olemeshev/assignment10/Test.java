@@ -45,20 +45,28 @@ public class Test {
                 {"1+a&2", "a = 2"},
 
                 {"1 + a * 2", "b = 2"},
-                {" a ^ b + a * 2 - 4 * c ", "a = 2", "b = 3 ", "c = 1"},
-                {"1 + a * 2", "t =tr"}
+                {" a ^ b + a * 2 - 4 / c ", "a = 2", "b = 3 ", "c = 0"},
+                {"1 + a * 2", "t =tr"},
+
+                {"1 + a*", "t =tr"},
+                {"1 + a*-5", "a =tr"},
+                {"1 + 2.0*-5", "45"}
         };
         String[] incorrectAnswers = new String[]{
                 "Formula is null or empty: []",
                 "Formula is null or empty: null",
                 "Formula is null or empty: []",
 
-                "Unknown value in formula: For input string: \"a*\"",
-                "Incorrect operators: &",
-                "Incorrect formula: For input string: \"1+a&2\"",
+                "5.0",
+                "Unknown value in formula: For input string: \"a&2\"",
+                "Unknown value in formula: For input string: \"a&2\"",
 
                 "Unknown value in formula: For input string: \"a\"",
-                "8.0",
+                "Divide by zero in formula.",
+                "Unknown value in formula: For input string: \"a\"",
+
+                "Unknown value in formula: For input string: \"a\"",
+                "Unknown value in formula: For input string: \"tr\"",
                 ""
         };
 
