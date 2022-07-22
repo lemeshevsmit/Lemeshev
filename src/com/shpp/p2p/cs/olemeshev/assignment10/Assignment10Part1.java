@@ -51,7 +51,7 @@ public class Assignment10Part1 {
         String[] formula = getFormula(line, variables);
         for (String operator : OPERATORS) {
             formula = findOperation(formula, operator);
-            Objects.requireNonNull(formula); //throw exception if null
+            Objects.requireNonNull(formula); //throw exception if null (exit)
         }
         if (formula.length > 1) throw new ArithmeticException(formula[1]);
         else return Double.parseDouble(formula[0]);
@@ -188,13 +188,14 @@ public class Assignment10Part1 {
         if (parameters.length > 1)
             for (int i = 1; i < parameters.length; i++) {
                 String[] value = parameters[i].split("=");
-                if (!list.containsKey(value[0].trim())) {
-                    try {
+                try {
+                    if (value.length>2) throw  new ArrayIndexOutOfBoundsException();
+                    if (!list.containsKey(value[0].trim())) {
                         list.put(value[0].trim(), parseFormula(value[1]));
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        System.out.println("Incorrect parameter: " +
-                                Arrays.toString(value));
                     }
+                } catch (ArrayIndexOutOfBoundsException e) {
+                    System.out.println("Incorrect parameter: " +
+                            parameters[i]);
                 }
             }
         return list;
