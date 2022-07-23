@@ -1,4 +1,4 @@
-package com.intellias.lemeshev;
+package com.intellias.lemeshev.start;
 
 import java.util.*;
 
@@ -66,10 +66,12 @@ public class Shop {
                 list.add(kay);
             }
         }
-        System.out.println("Person list who have product with id = "
-                + product.getId() + " " + product.getName() + " :");
-        for (String s : list) {
-            System.out.println(s);
+        if (list.size() > 0) {
+            System.out.println("Person list who have product with id = "
+                    + product.getId() + " - " + product.getName() + " :");
+            for (String s : list) {
+                System.out.println(s);
+            }
         }
         System.out.println(NEW_LINE);
     }
@@ -102,10 +104,12 @@ public class Shop {
      * @param list   list with product and count
      */
     private static void displayProductOfPerson(Person person, HashMap<String, Integer> list) {
-        System.out.println("Product list of person id = " + person.getId() + " - "
-                + person.getFirstName() + " " + person.getLastName() + " :");
-        for (String kay : list.keySet()) {
-            System.out.println("Product: " + kay + " count: " + list.get(kay));
+        if (list.size() > 0) {
+            System.out.println("Product list of person id = " + person.getId() + " - "
+                    + person.getFirstName() + " " + person.getLastName() + " :");
+            for (String kay : list.keySet()) {
+                System.out.println("Product: " + kay + " count: " + list.get(kay));
+            }
         }
         System.out.println(NEW_LINE);
     }
