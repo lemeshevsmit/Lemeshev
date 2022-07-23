@@ -1,0 +1,151 @@
+package com.intellias.lemeshev.middle_level;
+
+import com.intellias.lemeshev.entity.BuyHistory;
+import com.intellias.lemeshev.entity.Person;
+import com.intellias.lemeshev.entity.Product;
+import com.intellias.lemeshev.exception.IncorrectIdException;
+import com.intellias.lemeshev.exception.IncorrectInputParameterException;
+import com.intellias.lemeshev.exception.NoMoneyException;
+import com.intellias.lemeshev.start_level.Shop;
+
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+
+/**
+ * @author Aleksandr Lemeshev
+ * @since 23.07.2022
+ */
+public class EmptyShop extends Shop {
+    private static LinkedHashMap<Integer, Person> listOfPerson;
+    private static LinkedHashMap<Integer, Product> listOfProduct;
+    private static LinkedList<BuyHistory> listOfTransaction;
+    private static final String NEW_LINE = "***************************************************";
+    private static AtomicInteger productKay;
+    private static AtomicInteger personKay;
+
+    public EmptyShop() {
+        listOfPerson = new LinkedHashMap<>();
+        listOfProduct = new LinkedHashMap<>();
+        listOfTransaction = new LinkedList<>();
+        productKay = new AtomicInteger(1);
+        personKay = new AtomicInteger(1);
+    }
+
+    /**
+     * this method create menu logic and check exit flag of application
+     *
+     * @param exit flag of exit program
+     * @return status of flag
+     */
+    @Override
+    public boolean isExit(boolean exit) throws NoMoneyException,
+            IncorrectIdException, IncorrectInputParameterException {
+        if (!exit) System.out.print("Please, input number of menu:");
+        int kay = new Scanner(System.in).nextInt();
+        switch (kay) {
+            case 1 -> displayMenu();
+            case 2 -> displayListOfPerson(listOfPerson);
+            case 3 -> displayListOfProduct(listOfProduct);
+            case 4 -> buyTheProduct(listOfPerson, listOfProduct);
+            case 5 -> findProductsByPerson(listOfPerson, listOfTransaction);
+            case 6 -> findPersonsByProduct(listOfProduct, listOfTransaction);
+            case 7 -> addNewProduct(listOfProduct);
+            case 8 -> addNewPerson();
+            case 9 -> deleteProduct(listOfProduct, listOfTransaction);
+            case 10 -> deletePerson();
+            case 0 -> exit = true;
+        }
+        return exit;
+    }
+
+    /**
+     * this method display the menu of application.
+     */
+    @Override
+    public void displayMenu() {
+        System.out.println(NEW_LINE);
+        System.out.println("MENU: ");
+        System.out.println("1. Display menu.");
+        System.out.println("2. Display list of users in shop.");
+        System.out.println("3. Display list of products in shop.");
+        System.out.println("4. Buy the product by person.");
+        System.out.println("5. Display list of products by input person.");
+        System.out.println("6. Display list of person who buy input product.");
+        System.out.println("7. Add new product to shop.");
+        System.out.println("8. Add new person to shop.");
+        System.out.println("9. Delete product from shop.");
+        System.out.println("10. Delete person from shop.");
+        System.out.println("0. Exit");
+        System.out.println(NEW_LINE);
+    }
+
+    private void deletePerson() {
+
+    }
+
+    private void deleteProduct(LinkedHashMap<Integer, Product> products,
+                               LinkedList<BuyHistory> listOfTransactions)
+            throws IncorrectIdException {
+        System.out.print("Please, input id of product:");
+        int id = checkId(productKay.get());
+        Product product = products.get(id);///////////////////////check to null
+        for (BuyHistory transaction : listOfTransactions) {
+            if (transaction.getProduct().equals(product)) {
+                listOfTransactions.remove(product);
+            }
+        }
+        products.remove(id);
+    }
+
+    private void addNewPerson() {
+    }
+
+    /**
+     * this method  check input parameters to create new product
+     * and added him to list
+     *
+     * @param products list of product
+     * @throws IncorrectInputParameterException incorrect parameter
+     */
+    private void addNewProduct(LinkedHashMap<Integer, Product> products)
+            throws IncorrectInputParameterException {
+        System.out.print("Please, input name of product:");
+        String name = checkInputString();
+        System.out.print("Please, input price of product:");
+        double price = checkInputDouble();
+        int id = productKay.getAndIncrement();
+        products.put(id, new Product(id, name, price));
+        System.out.println("Product create correct and added to list.");
+        System.out.println(NEW_LINE);
+    }
+
+    /**
+     * check input double parameter to correct number and not negative number
+     *
+     * @return positive double number
+     * @throws IncorrectInputParameterException incorrect number
+     */
+    private double checkInputDouble() throws IncorrectInputParameterException {
+        double value = 0.0;
+        try {
+            value = new Scanner(System.in).nextDouble();
+        } catch (InputMismatchException e) {
+            throw new IncorrectInputParameterException(value);
+        }
+        if (value <= 0.0) throw new IncorrectInputParameterException(value);
+        return value;
+    }
+
+    /**
+     * this method check input string value to empty
+     *
+     * @return input string value
+     * @throws IncorrectInputParameterException empty parameter
+     */
+    private String checkInputString() throws IncorrectInputParameterException {
+        String value = new Scanner(System.in).nextLine().trim();
+        if (value.isEmpty()) {
+            throw new IncorrectInputParameterException(value);
+        } else return value;
+    }
+}
