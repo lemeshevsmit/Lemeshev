@@ -1,4 +1,4 @@
-package com.intellias.lemeshev.start;
+package com.intellias.lemeshev;
 
 /**
  * @author Aleksandr Lemeshev

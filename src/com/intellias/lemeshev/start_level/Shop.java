@@ -1,4 +1,8 @@
-package com.intellias.lemeshev.start;
+package com.intellias.lemeshev.start_level;
+
+import com.intellias.lemeshev.BuyHistory;
+import com.intellias.lemeshev.Person;
+import com.intellias.lemeshev.Product;
 
 import java.util.*;
 
