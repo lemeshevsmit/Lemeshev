@@ -1,37 +1,73 @@
 package com.intellias.lemeshev;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Scanner;
 
+/**
+ * @author Aleksandr Lemeshev
+ * @since 22.07.2022
+ */
 public class Shop {
-    private static HashMap<Integer, Person> listOfPerson = new HashMap<>();
-    private static HashMap<Integer, Product> listOfProduct = new HashMap<>();
-
+    private static final HashMap<Integer, Person> listOfPerson = new HashMap<>();
+    private static final HashMap<Integer, Product> listOfProduct = new HashMap<>();
+    private static final ArrayList<BuyHistory> listOfTransaction = new ArrayList<>();
+    private static final Scanner scanner = new Scanner(System.in);
 
     public static void main(String[] args) {
         createStartParameters();
         boolean exit = false;
         displayMenu();
-        Scanner scanner = new Scanner(System.in);
         while (!exit) {
-            if (!exit) System.out.print("Please, input number of menu:");
-            int kay = scanner.nextInt();
+            exit = isExit(exit);
+        }
+        scanner.close();
+    }
+
+    /**
+     * this method create menu logic and check exit flag of application
+     *
+     * @param exit flag of exit program
+     * @return status of flag
+     */
+    private static boolean isExit(boolean exit) {
+        if (!exit) System.out.print("Please, input number of menu:");
+        int kay = scanner.nextInt();
+        try {
             switch (kay) {
                 case 1 -> displayMenu();
                 case 2 -> displayListOfPerson();
                 case 3 -> displayListOfProduct();
-                case 4 -> {
-                    try {
-                        buyTheProduct();
-                    } catch (NoMoneyException e) {
-                        exit = true;
-                    }
-                }
+                case 4 -> buyTheProduct();
+                case 5 -> displayProductOfPerson();
                 case 0 -> exit = true;
             }
+        } catch (NoMoneyException e) {
+            exit = true;
         }
-        scanner.close();
+        return exit;
+    }
+
+    private static void displayProductOfPerson() {
+        System.out.print("Please, input id of person:");
+        int personId = scanner.nextInt();   ////////////////////////////////////
+        Person person = listOfPerson.get(personId);
+        HashMap<String, Integer> list = new HashMap<>();
+        for (BuyHistory transaction : listOfTransaction) {
+            if (transaction.getPerson().equals(person)) {
+                Product product = transaction.getProduct();
+                String kay = product.getName();
+                if (!list.containsKey(kay)) {
+                    list.put(kay, 1);
+                } else {
+                    list.replace(kay, list.get(kay) + 1);
+//                    list.replace(product.getName(),
+//                            list.get(product.getName()).intValue(),
+//                            list.get(product.getName()).intValue()++);
+                }
+            }
+        }
     }
 
     /**
@@ -50,10 +86,9 @@ public class Shop {
      * this method check input id numbers of person and product to correct
      * and do transaction if all parameters is good
      *
-     * @throws NoMoneyException
+     * @throws NoMoneyException if person don't have money
      */
     private static void buyTheProduct() throws NoMoneyException {
-        Scanner scanner = new Scanner(System.in);
         int personId = 0, productId = 0;
         try {
             System.out.print("Please, input person ID: ");
@@ -65,7 +100,6 @@ public class Shop {
             System.exit(0);
         }
         checkTransaction(personId, productId);
-        scanner.close();
     }
 
     /**
@@ -90,15 +124,27 @@ public class Shop {
         double money = listOfPerson.get(personId).getMoney();
         double price = listOfProduct.get(productId).getPrice();
         if (money < price) {
-            throw new NoMoneyException(money, price) {
-            };
+            throw new NoMoneyException(money, price);
         } else {
-            doTransaction(personId,productId);
+            doTransaction(personId, productId);
         }
     }
 
+    /**
+     * this method add to transaction list new transaction, display message about
+     * successful buy and withdraw money from person
+     *
+     * @param personId  person who buy
+     * @param productId product to sale
+     */
     private static void doTransaction(int personId, int productId) {
-
+        Person buyer = listOfPerson.get(personId);
+        Product product = listOfProduct.get(productId);
+        buyer.setMoney(buyer.getMoney() - product.getPrice());
+        listOfTransaction.add(new BuyHistory(listOfTransaction.size() + 1, buyer, product));
+        System.out.println("Person: " + buyer.getFirstName() + " " + buyer.getLastName()
+                + " with id = " + personId + " successful buy product: "
+                + product.getName() + " with id = " + productId);
     }
 
     /**
@@ -108,9 +154,9 @@ public class Shop {
         System.out.println("Person list:");
         for (Map.Entry<Integer, Person> person : listOfPerson.entrySet()) {
             System.out.println("ID: " + person.getKey()
-                    + " firstname: " + person.getValue().getFirstName()
-                    + " lastname: " + person.getValue().getLastName()
-                    + " money: " + person.getValue().getMoney());
+                    + "; firstname: " + person.getValue().getFirstName()
+                    + "; lastname: " + person.getValue().getLastName()
+                    + "; money: " + person.getValue().getMoney());
         }
     }
 
@@ -121,8 +167,8 @@ public class Shop {
         System.out.println("Product list:");
         for (Map.Entry<Integer, Product> product : listOfProduct.entrySet()) {
             System.out.println("ID: " + product.getKey()
-                    + " name: " + product.getValue().getName()
-                    + " price: " + product.getValue().getPrice());
+                    + "; name: " + product.getValue().getName()
+                    + "; price: " + product.getValue().getPrice());
         }
     }
 
@@ -152,7 +198,7 @@ public class Shop {
     }
 
     /**
-     * Inner class for my exception
+     * Inner class for my exception if person don't have money
      */
     private static class NoMoneyException extends Throwable {
 
@@ -164,7 +210,7 @@ public class Shop {
          */
         public NoMoneyException(double money, double price) {
             System.err.println("This person don't have money.");
-            System.err.println("You have: " + money + " and you need: " + price);
+            System.err.println("You have: " + money + ", but you need: " + price);
         }
     }
 }

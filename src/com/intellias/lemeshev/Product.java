@@ -1,13 +1,12 @@
 package com.intellias.lemeshev;
 
-import java.util.HashMap;
 
 /**
  * @author Aleksandr Lemeshev
  * @since 22.07.2022
  */
 public class Product {
-    private int id;
+    private final int id;
     private String name;
     private double price;
 

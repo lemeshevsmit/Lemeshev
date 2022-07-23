@@ -1,7 +1,11 @@
 package com.intellias.lemeshev;
 
+/**
+ * @author Aleksandr Lemeshev
+ * @since 22.07.2022
+ */
 public class Person {
-    private int id;
+    private final int id;
     private String firstName;
     private String lastName;
     private double money;
