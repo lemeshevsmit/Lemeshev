@@ -23,6 +23,9 @@ public class EmptyShop extends Shop {
     private static AtomicInteger productKay;
     private static AtomicInteger personKay;
 
+    /**
+     * constructor where I init all collections
+     */
     public EmptyShop() {
         listOfPerson = new LinkedHashMap<>();
         listOfProduct = new LinkedHashMap<>();
