@@ -26,33 +26,9 @@ public class EmptyShop extends Shop {
     public EmptyShop() {
         listOfPerson = new LinkedHashMap<>();
         listOfProduct = new LinkedHashMap<>();
-
-
-
-
-
-
-        Product[] products = new Product[]{
-                new Product(1, "cup", 99.99),
-                new Product(2, "boot", 200.0),
-                new Product(3, "shoose", 250.0)};
-        Person[] persons = new Person[]{
-                new Person(1, "Anton", "Grigorovich", 5000.0),
-                new Person(2, "Stepan", "Bandera", 9258.5),
-                new Person(3, "Taras", "Shevchenoko", 1200.0)};
-        listOfPerson.put(persons[0].getId(),persons[0]);
-        listOfPerson.put(persons[1].getId(),persons[1]);
-        listOfPerson.put(persons[2].getId(),persons[2]);
-
-        listOfProduct.put(products[0].getId(),products[0]);
-        listOfProduct.put(products[1].getId(),products[1]);
-        listOfProduct.put(products[2].getId(),products[2]);
-
-
-
         listOfTransaction = new LinkedList<>();
-        productKay = new AtomicInteger(4);
-        personKay = new AtomicInteger(4);
+        productKay = new AtomicInteger(1);
+        personKay = new AtomicInteger(1);
     }
 
     /**
