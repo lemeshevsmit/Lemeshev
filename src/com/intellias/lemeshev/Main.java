@@ -16,7 +16,7 @@ public class Main {
             try {
                 exit = shop.isExit(exit);
             } catch (NoMoneyException | IncorrectIdException | IncorrectInputParameterException e) {
-                exit = true;
+                System.out.println("***************************************************");
             }
         }
     }

@@ -26,9 +26,33 @@ public class EmptyShop extends Shop {
     public EmptyShop() {
         listOfPerson = new LinkedHashMap<>();
         listOfProduct = new LinkedHashMap<>();
+
+
+
+
+
+
+        Product[] products = new Product[]{
+                new Product(1, "cup", 99.99),
+                new Product(2, "boot", 200.0),
+                new Product(3, "shoose", 250.0)};
+        Person[] persons = new Person[]{
+                new Person(1, "Anton", "Grigorovich", 5000.0),
+                new Person(2, "Stepan", "Bandera", 9258.5),
+                new Person(3, "Taras", "Shevchenoko", 1200.0)};
+        listOfPerson.put(persons[0].getId(),persons[0]);
+        listOfPerson.put(persons[1].getId(),persons[1]);
+        listOfPerson.put(persons[2].getId(),persons[2]);
+
+        listOfProduct.put(products[0].getId(),products[0]);
+        listOfProduct.put(products[1].getId(),products[1]);
+        listOfProduct.put(products[2].getId(),products[2]);
+
+
+
         listOfTransaction = new LinkedList<>();
-        productKay = new AtomicInteger(1);
-        personKay = new AtomicInteger(1);
+        productKay = new AtomicInteger(4);
+        personKay = new AtomicInteger(4);
     }
 
     /**
@@ -46,13 +70,13 @@ public class EmptyShop extends Shop {
             case 1 -> displayMenu();
             case 2 -> displayListOfPerson(listOfPerson);
             case 3 -> displayListOfProduct(listOfProduct);
-            case 4 -> buyTheProduct(listOfPerson, listOfProduct);
+            case 4 -> buyTheProduct(listOfPerson, listOfProduct, listOfTransaction);
             case 5 -> findProductsByPerson(listOfPerson, listOfTransaction);
             case 6 -> findPersonsByProduct(listOfProduct, listOfTransaction);
             case 7 -> addNewProduct(listOfProduct);
-            case 8 -> addNewPerson();
+            case 8 -> addNewPerson(listOfPerson);
             case 9 -> deleteProduct(listOfProduct, listOfTransaction);
-            case 10 -> deletePerson();
+            case 10 -> deletePerson(listOfPerson, listOfTransaction);
             case 0 -> exit = true;
         }
         return exit;
@@ -79,25 +103,65 @@ public class EmptyShop extends Shop {
         System.out.println(NEW_LINE);
     }
 
-    private void deletePerson() {
-
+    /**
+     * this method remove person from two list ( persons and transactions)
+     *
+     * @param persons            list of persons
+     * @param listOfTransactions list of transactions
+     * @throws IncorrectIdException incorrect input id of product
+     */
+    private void deletePerson(LinkedHashMap<Integer, Person> persons,
+                              LinkedList<BuyHistory> listOfTransactions)
+            throws IncorrectIdException {
+        System.out.print("Please, input id of person:");
+        int id = checkId(Collections.max(persons.keySet()));
+        Person person = persons.get(id);
+        if (person == null) throw new IncorrectIdException(id);
+        listOfTransactions.removeIf(transaction ->
+                transaction.getPerson().equals(person));
+        persons.remove(id);
+        System.out.println("Person correct delete from shop.");
+        System.out.println(NEW_LINE);
     }
 
+    /**
+     * this method remove product from two list ( products and transactions)
+     *
+     * @param products           list of products
+     * @param listOfTransactions list of transactions
+     * @throws IncorrectIdException incorrect input id of product
+     */
     private void deleteProduct(LinkedHashMap<Integer, Product> products,
                                LinkedList<BuyHistory> listOfTransactions)
             throws IncorrectIdException {
         System.out.print("Please, input id of product:");
         int id = checkId(productKay.get());
         Product product = products.get(id);///////////////////////check to null
-        for (BuyHistory transaction : listOfTransactions) {
-            if (transaction.getProduct().equals(product)) {
-                listOfTransactions.remove(product);
-            }
-        }
+        listOfTransactions.removeIf(transaction ->
+                transaction.getProduct().equals(product));
         products.remove(id);
+        System.out.println("Product correct delete from shop.");
+        System.out.println(NEW_LINE);
     }
 
-    private void addNewPerson() {
+    /**
+     * this method check input parameters add new person to list
+     *
+     * @param persons list of persons
+     * @throws IncorrectInputParameterException incorrect input parameter
+     */
+    private void addNewPerson(LinkedHashMap<Integer, Person> persons)
+            throws IncorrectInputParameterException {
+        System.out.print("Please, input firstname of person:");
+        String firstname = checkInputString();
+        System.out.print("Please, input lastname of person:");
+        String lastname = checkInputString();
+        System.out.print("Please, input start money of person:");
+        double money = checkInputDouble();
+        int id = personKay.getAndIncrement();
+        persons.put(id, new Person(id, firstname, lastname, money));
+        System.out.println("Person create correct and added to list.");
+        System.out.println(NEW_LINE);
     }
 
     /**
@@ -125,7 +189,8 @@ public class EmptyShop extends Shop {
      * @return positive double number
      * @throws IncorrectInputParameterException incorrect number
      */
-    private double checkInputDouble() throws IncorrectInputParameterException {
+    private double checkInputDouble()
+            throws IncorrectInputParameterException {
         double value = 0.0;
         try {
             value = new Scanner(System.in).nextDouble();
@@ -142,7 +207,8 @@ public class EmptyShop extends Shop {
      * @return input string value
      * @throws IncorrectInputParameterException empty parameter
      */
-    private String checkInputString() throws IncorrectInputParameterException {
+    private String checkInputString()
+            throws IncorrectInputParameterException {
         String value = new Scanner(System.in).nextLine().trim();
         if (value.isEmpty()) {
             throw new IncorrectInputParameterException(value);
