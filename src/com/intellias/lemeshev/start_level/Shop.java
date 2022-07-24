@@ -55,7 +55,7 @@ public class Shop {
             case 1 -> displayMenu();
             case 2 -> displayListOfPerson(listOfPerson);
             case 3 -> displayListOfProduct(listOfProduct);
-            case 4 -> buyTheProduct(listOfPerson, listOfProduct);
+            case 4 -> buyTheProduct(listOfPerson, listOfProduct, listOfTransaction);
             case 5 -> findProductsByPerson(listOfPerson, listOfTransaction);
             case 6 -> findPersonsByProduct(listOfProduct, listOfTransaction);
             case 0 -> exit = true;
@@ -74,7 +74,9 @@ public class Shop {
                                      LinkedList<BuyHistory> listOfTransactions)
             throws IncorrectIdException {
         System.out.print("Please, input id of product:");
-        Product product = products.get(checkId(products.size()));
+        int id = checkId(Collections.max(products.keySet()));
+        Product product = products.get(id);
+        if (product == null) throw new IncorrectIdException(id);
         Set<String> list = new LinkedHashSet<>();
         for (BuyHistory transaction : listOfTransactions) {
             if (transaction.getProduct().equals(product)) {
@@ -104,7 +106,9 @@ public class Shop {
                                      LinkedList<BuyHistory> listOfTransactions)
             throws IncorrectIdException {
         System.out.print("Please, input id of person:");
-        Person person = persons.get(checkId(persons.size()));
+        int id = checkId(Collections.max(persons.keySet()));
+        Person person = persons.get(id);
+        if (person == null) throw new IncorrectIdException(id);
         HashMap<String, Integer> list = new HashMap<>();
         for (BuyHistory transaction : listOfTransactions) {
             if (transaction.getPerson().equals(person)) {
@@ -151,7 +155,7 @@ public class Shop {
         } catch (Exception e) {
             throw new IncorrectIdException();
         }
-        if ((id > 1) & (id < size)) {
+        if ((id >= 1) & (id <= size)) {
             return id;
         }
         throw new IncorrectIdException(id);
@@ -177,19 +181,21 @@ public class Shop {
      * this method check input id numbers of person and product to correct
      * and do transaction if all parameters is good
      *
-     * @param persons  list of persons
-     * @param products list of products
+     * @param persons      list of persons
+     * @param products     list of products
+     * @param transactions list of transactions
      * @throws NoMoneyException     if person don't have money
      * @throws IncorrectIdException incorrect id number;
      */
     public void buyTheProduct(HashMap<Integer, Person> persons,
-                              HashMap<Integer, Product> products)
+                              HashMap<Integer, Product> products,
+                              LinkedList<BuyHistory> transactions)
             throws NoMoneyException, IncorrectIdException {
         System.out.print("Please, input person ID:");
-        int personId = checkId(persons.size());
+        int personId = checkId(Collections.max(persons.keySet()));
         System.out.print("Please, input product ID: ");
-        int productId = checkId(products.size());
-        checkTransaction(personId, productId);
+        int productId = checkId(Collections.max(products.keySet()));
+        checkTransaction(personId, productId, persons, products, transactions);
     }
 
     /**
@@ -197,18 +203,24 @@ public class Shop {
      * than return message if id not found or person don't have money
      * if all parameters is good do transaction
      *
-     * @param personId  person id number
-     * @param productId product id number
+     * @param personId     person id number
+     * @param productId    product id number
+     * @param persons      list of persons
+     * @param products     list of products
+     * @param transactions list of transactions
      * @throws NoMoneyException no money to do transaction
      */
-    private void checkTransaction(int personId, int productId)
+    private void checkTransaction(int personId, int productId,
+                                  HashMap<Integer, Person> persons,
+                                  HashMap<Integer, Product> products,
+                                  LinkedList<BuyHistory> transactions)
             throws NoMoneyException {
-        double money = listOfPerson.get(personId).getMoney();
-        double price = listOfProduct.get(productId).getPrice();
+        double money = persons.get(personId).getMoney();
+        double price = products.get(productId).getPrice();
         if (money < price) {
             throw new NoMoneyException(money, price);
         } else {
-            doTransaction(personId, productId);
+            doTransaction(personId, productId, persons, products, transactions);
         }
     }
 
@@ -216,14 +228,20 @@ public class Shop {
      * this method add to transaction list new transaction, display message about
      * successful buy and withdraw money from person
      *
-     * @param personId  person who buy
-     * @param productId product to sale
+     * @param personId     person who buy
+     * @param productId    product to sale
+     * @param persons      list of persons
+     * @param products     list of products
+     * @param transactions list of transactions
      */
-    private void doTransaction(int personId, int productId) {
-        Person buyer = listOfPerson.get(personId);
-        Product product = listOfProduct.get(productId);
+    private void doTransaction(int personId, int productId,
+                               HashMap<Integer, Person> persons,
+                               HashMap<Integer, Product> products,
+                               LinkedList<BuyHistory> transactions) {
+        Person buyer = persons.get(personId);
+        Product product = products.get(productId);
         buyer.setMoney(buyer.getMoney() - product.getPrice());
-        listOfTransaction.add(new BuyHistory(listOfTransaction.size() + 1, buyer, product));
+        transactions.add(new BuyHistory(transactions.size() + 1, buyer, product));
         System.out.println("Person: " + buyer.getFirstName() + " " + buyer.getLastName()
                 + " with id = " + personId + " successful buy product: "
                 + product.getName() + " with id = " + productId);
