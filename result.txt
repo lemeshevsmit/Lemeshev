@@ -1,0 +1,5 @@
+Negative number=-5.0 in function [sqrt]. Please, check input value.
+Negative number=-50.0 in function [log]. Please, check input value.
+Negative number=-30.0 in function [log]. Please, check input value.
+Function [tan] doesn't exist in number=PI/2 in peroid PI. Please, check input value.
+Incorrect value: For input string: "6.123233995736766E"

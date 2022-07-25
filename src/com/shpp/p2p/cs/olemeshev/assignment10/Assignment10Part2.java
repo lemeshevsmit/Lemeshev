@@ -1,12 +1,8 @@
 package com.shpp.p2p.cs.olemeshev.assignment10;
 
 
-import acm.graphics.GPoint;
 import com.shpp.cs.a.simple.SimpleProgram;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;

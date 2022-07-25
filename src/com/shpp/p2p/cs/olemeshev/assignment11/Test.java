@@ -1,6 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.assignment10;
-
-import com.shpp.p2p.cs.olemeshev.assignment11.Assignment11Part1;
+package com.shpp.p2p.cs.olemeshev.assignment11;
 
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
@@ -13,62 +11,28 @@ import java.util.Arrays;
 public class Test {
     public static void main(String[] args) throws FileNotFoundException {
         String[][] correctTests = new String[][]{
-                {"1 + a * 2", "a = 2"},
-                {"2 * 4 - 6 / 3 + 6 + 1 / 3 - 6 + -1 * -1"},
-                {"1 + 3 + 5"},
-                {"1 - 3 - 5"},
-                {"1 * 3 * 5"},
-
-                {"-1 * -3 * -5"},
-                {"-1"},
-                {"4 / 2 * 2 + 2 ^ 3 + 3 - -1 - 3 + -5 * 2 + 10"},
-                {"5 * 4 / 2"},
-                {"5 / 4 * 2"},
-
-                {"3 ^ -1"},
-                {"a ^ b + a * 2 - 4 * c", "a = 2", "b = 3", "c = 1"},
-                {"a ^ b / a * 2 - 4 * c * a", "a = 2", "b = 3", "x = 0", "c = 1"},
-                {"1 + a * 2", "a = -2.0D"},
-                {"1 + a * 2", "a = 2 * 3 ^ 2"}
+                {"1+(2+3*(4+5-sin(45*cos(a))))/7", "a=(1+3)-1"},
+                {"sqrt(2^3)"},
+                {"sqrt(9*sin(pi/2))+ cos(pi) - log2(64)*log10(10) + 2^(sqrt(x))", "pi=" + Math.PI, "x = 9"}
         };
         String[] correctAnswers = new String[]{
-                "5.0", String.valueOf(7 + 1.0 / 3), "9.0", "-7.0", "15.0",
-                "-15.0", "-1.0", "13.0", "10.0", "2.5",
-                String.valueOf(Math.pow(3, -1)), "8.0", "0.0", "-3.0", "37.0"
+                "5.373176543474313",
+                "2.8284271247461903",
+                "4.0"
         };
 
         String[][] incorrectTests = new String[][]{
-                {},
-                null,
-                {"", "s=4"},
-
-                {"1 + a* 2", "a = 2"},
-                {"1 + a & 2", "a = 2"},
-                {"1+a&2", "a = 2"},
-
-                {"1 + a * 2", "b = 2"},
-                {" a ^ b + a * 2 - 4 / c ", "a = 2", "b = 3 ", "c = 0"},
-                {"1 + a * 2", "t =tr"},
-
-                {"1 + a*", "t =tr"},
-                {"1 + a*-5", "a =tr"},
-                {"1 + 2.0*-5", "45"}
+                {"sqrt(-5)"},
+                {"log2(-50)"},
+                {"log10(-30)"},
+                {"tan(pi/2)", "pi=" + Math.PI},
+                {"3/cos(pi/2)", "pi=" + Math.PI}
         };
         String[] incorrectAnswers = new String[]{
-                "Formula is null or empty: []",
-                "Formula is null or empty: null",
-                "Formula is null or empty: [, s=4]",
-
-                "5.0",
-                "Unknown value in formula: For input string: \"a&2\"",
-                "Unknown value in formula: For input string: \"a&2\"",
-
-                "Unknown value in formula: For input string: \"a\"",
-                "Divide by zero in formula.",
-                "Unknown value in formula: For input string: \"a\"",
-
-                "Unknown value in formula: For input string: \"a\"",
-                "Unknown value in formula: For input string: \"tr\"",
+                "Negative number=-5.0 in function [sqrt]. Please, check input value.",
+                "Negative number=-50.0 in function [log]. Please, check input value.",
+                "Negative number=-30.0 in function [log]. Please, check input value.",
+                "Function [tan] doesn't exist in number=PI/2 in peroid PI. Please, check input value.",
                 ""
         };
 
@@ -81,7 +45,7 @@ public class Test {
 
     static void start() {
         String[] test = new String[]{"1 + a * 2", "t =tr"};
-        Assignment10Part1.main(test);
+        Assignment11Part1.main(test);
     }
 
     /**
@@ -102,7 +66,7 @@ public class Test {
         // меняю консоль на новую для вывода в файл.
         System.setOut(console);
         for (String[] test : tests) {
-            Assignment10Part1.main(test);
+            Assignment11Part1.main(test);
         }
         System.setOut(out);
 

@@ -2,9 +2,6 @@ package com.shpp.p2p.cs.olemeshev.assignment10;
 
 import acm.graphics.*;
 
-import javax.script.ScriptEngine;
-import javax.script.ScriptEngineManager;
-import javax.script.ScriptException;
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
