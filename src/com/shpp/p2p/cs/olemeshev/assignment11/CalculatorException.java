@@ -36,6 +36,8 @@ public class CalculatorException extends Throwable {
             case 5 -> System.out.println("Divide by zero in formula.");
             case 6 -> System.out.println("Incorrect value: " + parameter);
             case 7 -> System.out.println("Incorrect operators: " + parameter);
+            case 8 -> System.out.println("Cannot find: " + parameter +
+                    ". Please, check input value.");
 
         }
     }

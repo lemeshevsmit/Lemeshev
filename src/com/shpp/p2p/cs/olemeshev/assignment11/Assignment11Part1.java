@@ -21,17 +21,14 @@ public class Assignment11Part1 {
      *
      * @param args start parameters (formula and parameters)
      */
-    public static void main(String[] args) {
-        try {
-            if (args == null || args[0].equals("")
-                    || Arrays.equals(args, new String[]{})) {
-                throw new CalculatorException(Arrays.toString(args), 0);
-            }
-            HashMap<String, String[]> parameters = getParameters(args);
-            String resultFormula = checkFunction(args[0], parameters);
-            System.out.println(calculate(resultFormula, parameters));
-        } catch (CalculatorException ignored) {
+    public static void main(String[] args) throws CalculatorException {
+        if (args == null || args[0].equals("")
+                || Arrays.equals(args, new String[]{})) {
+            throw new CalculatorException(Arrays.toString(args), 0);
         }
+        HashMap<String, String[]> parameters = getParameters(args);
+        String resultFormula = checkFunction(args[0], parameters);
+        System.out.println(calculate(resultFormula, parameters));
     }
 
     /**
@@ -41,11 +38,10 @@ public class Assignment11Part1 {
      * @param line      Start formula
      * @param variables start parameters
      * @return result of calculate formula
-     * @throws CalculatorException            incorrect formula
-     * @throws ArrayIndexOutOfBoundsException incorrect formula
+     * @throws CalculatorException incorrect formula
      */
     static double calculate(String line, HashMap<String, String[]> variables)
-            throws CalculatorException, ArrayIndexOutOfBoundsException {
+            throws CalculatorException {
         String[] formula = getFormula(line, variables);
         for (String operator : OPERATORS) {
             formula = findOperation(formula, operator);
@@ -61,12 +57,10 @@ public class Assignment11Part1 {
      * @param line      start formula
      * @param variables list with parameters
      * @return final formula
-     * @throws ArrayIndexOutOfBoundsException incorrect formula
      */
     private static String[] getFormula(String line,
-                                       HashMap<String, String[]> variables)
-            throws ArrayIndexOutOfBoundsException {
-        String[] formula = parseFormula(line);
+                                       HashMap<String, String[]> variables) {
+        String[] formula = createFormula(line);
         if (variables.size() > 0) {
             LinkedList<String> newFormula = new LinkedList<>();
             for (String s : formula) {
@@ -89,19 +83,13 @@ public class Assignment11Part1 {
      *
      * @param line Start formula
      * @return formula in array view
-     * @throws ArrayIndexOutOfBoundsException incorrect formula
      */
-    private static String[] parseFormula(String line)
-            throws ArrayIndexOutOfBoundsException {
+    private static String[] createFormula(String line) {
         ArrayList<String> formula = new ArrayList<>();
         StringBuilder sb = new StringBuilder();
         String[] temp = line.replaceAll(" ", "").split("");
         for (int i = 0; i < temp.length; i++) {
             if (Arrays.asList(OPERATORS).contains(temp[i])) {
-//                if (temp[i].equals("E")& temp[i+1].equals("-")){
-//             /////////////////////E-13
-//                }
-
                 if (sb.isEmpty()) {
                     if (temp[i].equals("-")) {
                         if (Arrays.asList(OPERATORS).contains(temp[i + 1])) {
@@ -113,10 +101,31 @@ public class Assignment11Part1 {
                     formula.add(temp[i]);
                     sb = new StringBuilder();
                 }
-            } else sb.append(temp[i]);
+            } else i = checkExponentView(sb, temp, i);
         }
         if (!sb.isEmpty()) formula.add(sb.toString());
         return formula.toArray(new String[0]);
+    }
+
+
+    /**
+     * this method check exponential view in formula if we have symbol "E"
+     *
+     * @param sb   new formula
+     * @param temp array of symbols in formula
+     * @param i    current position
+     * @return new position and rewrite sb
+     */
+    private static int checkExponentView(StringBuilder sb, String[] temp, int i) {
+        if (temp[i].equals("E")
+                && (i + 3 < temp.length)
+                && temp[i + 1].equals("-")
+                && Character.isDigit(temp[i + 2].charAt(0))
+                && Character.isDigit(temp[i + 3].charAt(0))) {
+            sb.append(temp[i]).append(temp[i + 1]).append(temp[i + 2]).append(temp[i + 3]);
+            i = i + 3;
+        } else sb.append(temp[i]);
+        return i;
     }
 
     /**
@@ -145,85 +154,6 @@ public class Assignment11Part1 {
         return temp.toArray(new String[0]);
     }
 
-    /**
-     * This method do arithmetical operation with two double variable
-     *
-     * @param value1 first value
-     * @param value2 second value
-     * @param o      String association of math operation
-     * @return result of arithmetical operation
-     * @throws CalculatorException Divide by zero exception
-     */
-    static double operator(double value1, double value2, String o)
-            throws CalculatorException {
-        switch (o) {
-            case "+" -> {
-                return value1 + value2;
-            }
-            case "-" -> {
-                return value1 - value2;
-            }
-            case "*" -> {
-                return value1 * value2;
-            }
-            case "/" -> {
-                try {
-                    return value1 / value2;
-                } catch (ArithmeticException e) {
-                    throw new CalculatorException("", 5);
-                }
-            }
-            case "^" -> {
-                return Math.pow(value1, value2);
-            }
-        }
-        return 0.0;
-    }
-
-    /**
-     * This method do arithmetical operation with variable
-     *
-     * @param value input value
-     * @param f     input function
-     * @return result of arithmetical operation
-     * @throws CalculatorException incorrect value in function
-     */
-    static double function(double value, String f)
-            throws CalculatorException {
-        switch (f) {
-            case "sin" -> {
-                return Math.sin(value);
-            }
-            case "cos" -> {
-                return Math.cos(value);
-            }
-            case "atan" -> {
-                return Math.atan(value);
-            }
-            case "tan" -> {
-                if (value % (Math.PI / 2.0) == 0)
-                    throw new CalculatorException(Double.toString(value), 3);
-                return Math.tan(value);
-            }
-            case "log10" -> {
-                if (Double.isNaN(Math.log10(value)))
-                    throw new CalculatorException(Double.toString(value), 1);
-                return Math.log10(value);
-            }
-            case "log2" -> {
-                if (Double.isNaN(Math.log(value)))
-                    throw new CalculatorException(Double.toString(value), 1);
-                return Math.log(value) / Math.log(2);
-            }
-            case "sqrt" -> {
-                if (Double.isNaN(Math.sqrt(value)))
-                    throw new CalculatorException(Double.toString(value), 2);
-                return Math.sqrt(value);
-            }
-        }
-        return 0.0;
-    }
-
 
     /**
      * This method return list with input parameters. If we
@@ -239,22 +169,31 @@ public class Assignment11Part1 {
         if (parameters.length > 1)
             for (int i = 1; i < parameters.length; i++) {
                 String[] value = parameters[i].split("=");
-                if (value.length > 2) {
-                    throw new CalculatorException("", 4);
-                }
-                if (!list.containsKey(value[0].trim())) {
+                if (value.length > 2) throw new CalculatorException("", 4);
+                String kay = value[0].replaceAll(" ", "");
+                if (!list.containsKey(kay)) {
                     value[1] = checkFunction(value[1], new HashMap<>());
-                    list.put(value[0].trim(), parseFormula(value[1]));
+                    list.put(kay, createFormula(value[1]));
                 }
             }
         return list;
     }
 
+    /**
+     * this method check formula to contains "(",")" and functions
+     * if we have this elements calculate him
+     *
+     * @param s          input formula
+     * @param parameters list with parameters
+     * @return new formula without functions and "(", ")"
+     * @throws CalculatorException incorrect value
+     */
     private static String checkFunction(String s, HashMap<String, String[]> parameters)
             throws CalculatorException {
         while (s.contains("(")) {
             int start = s.lastIndexOf('(');
             int end = s.substring(start).indexOf(')');
+            if (end == -1) throw new CalculatorException(")", 8);
             double result;
             for (int i = 0; i < FUNCTIONS.length; i++) {
                 if (start - FUNCTIONS[i].length() < 0) {
@@ -282,5 +221,84 @@ public class Assignment11Part1 {
             }
         }
         return s;
+    }
+
+    /**
+     * This method do arithmetical operation with two double variable
+     *
+     * @param value1 first value
+     * @param value2 second value
+     * @param o      String association of math operation
+     * @return result of arithmetical operation
+     * @throws CalculatorException Divide by zero exception
+     */
+    static double operator(double value1, double value2, String o)
+            throws CalculatorException {
+        switch (o) {
+            case "+" -> {
+                return value1 + value2;
+            }
+            case "-" -> {
+                return value1 - value2;
+            }
+            case "*" -> {
+                return value1 * value2;
+            }
+            case "/" -> {
+                if (value2 == 0.0) throw new CalculatorException("", 5);
+                else return value1 / value2;
+            }
+            case "^" -> {
+                return Math.pow(value1, value2);
+            }
+        }
+        return 0.0;
+    }
+
+    /**
+     * This method do arithmetical operation with variable
+     *
+     * @param value input value
+     * @param f     input function
+     * @return result of arithmetical operation
+     * @throws CalculatorException incorrect value in function
+     */
+    static double function(double value, String f)
+            throws CalculatorException {
+        switch (f) {
+            case "sin" -> {
+                if (value % Math.PI == 0.0) return 0.0;
+                else return Math.sin(value);
+            }
+            case "cos" -> {
+                if ((value % (Math.PI / 2.0) == 0.0)
+                        & (value % Math.PI != 0.0)) return 0.0;
+                else return Math.cos(value);
+            }
+            case "atan" -> {
+                return Math.atan(value);
+            }
+            case "tan" -> {
+                if (value % (Math.PI / 2.0) == 0.0)
+                    throw new CalculatorException(Double.toString(value), 3);
+                else return Math.tan(value);
+            }
+            case "log10" -> {
+                if (value < 0.0)
+                    throw new CalculatorException(Double.toString(value), 1);
+                else return Math.log10(value);
+            }
+            case "log2" -> {
+                if (value < 0.0)
+                    throw new CalculatorException(Double.toString(value), 1);
+                else return Math.log(value) / Math.log(2);
+            }
+            case "sqrt" -> {
+                if (value < 0.0)
+                    throw new CalculatorException(Double.toString(value), 2);
+                else return Math.sqrt(value);
+            }
+        }
+        return 0.0;
     }
 }

@@ -26,14 +26,27 @@ public class Test {
                 {"log2(-50)"},
                 {"log10(-30)"},
                 {"tan(pi/2)", "pi=" + Math.PI},
-                {"3/cos(pi/2)", "pi=" + Math.PI}
+                {"3/cos(pi/2)", "pi=3.141592653589793"},
+                {"3/sin(0)", "pi=3.141592653589793"},
+                {"3/sin(0", "pi=3.141592653589793"},
+                {"3/sin(3)*pi+3)", "pi=3.141592653589793"},
+                {"3/asin(3)*(pi+3)", "pi=3.141592653589793"},
+                {"3/sin(3)**(pi+3)", "pi=3.141592653589793"},
+                {"3^(aleksandr lemeshev)", "aleksandr lemeshev=5"},
+
         };
         String[] incorrectAnswers = new String[]{
                 "Negative number=-5.0 in function [sqrt]. Please, check input value.",
                 "Negative number=-50.0 in function [log]. Please, check input value.",
                 "Negative number=-30.0 in function [log]. Please, check input value.",
                 "Function [tan] doesn't exist in number=PI/2 in peroid PI. Please, check input value.",
-                ""
+                "Divide by zero in formula.",
+                "Divide by zero in formula.",
+                "Cannot find: ). Please, check input value.",
+                "Incorrect value: For input string: \"3)\"",
+                "Incorrect value: For input string: \"a0.1411200080598672\"",
+                "Incorrect value: For input string: \"*\"",
+                "243.0"
         };
 
         testing(correctTests, correctAnswers);
@@ -45,7 +58,10 @@ public class Test {
 
     static void start() {
         String[] test = new String[]{"1 + a * 2", "t =tr"};
-        Assignment11Part1.main(test);
+        try {
+            Assignment11Part1.main(test);
+        } catch (CalculatorException ignored) {
+        }
     }
 
     /**
@@ -66,7 +82,10 @@ public class Test {
         // меняю консоль на новую для вывода в файл.
         System.setOut(console);
         for (String[] test : tests) {
-            Assignment11Part1.main(test);
+            try {
+                Assignment11Part1.main(test);
+            } catch (CalculatorException ignored) {
+            }
         }
         System.setOut(out);
 
