@@ -38,6 +38,7 @@ public class CalculatorException extends Throwable {
             case 7 -> System.out.println("Incorrect operators: " + parameter);
             case 8 -> System.out.println("Cannot find: " + parameter +
                     ". Please, check input value.");
+            case 9 -> System.out.println("Unknown argument: " + parameter);
 
         }
     }
