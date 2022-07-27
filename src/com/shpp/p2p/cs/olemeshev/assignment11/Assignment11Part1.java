@@ -234,25 +234,21 @@ public class Assignment11Part1 {
      */
     static double operator(double value1, double value2, String o)
             throws CalculatorException {
+        double result = 0.0;
         switch (o) {
-            case "+" -> {
-                return value1 + value2;
-            }
-            case "-" -> {
-                return value1 - value2;
-            }
-            case "*" -> {
-                return value1 * value2;
-            }
+            case "+" -> result = value1 + value2;
+            case "-" -> result = value1 - value2;
+            case "*" -> result = value1 * value2;
             case "/" -> {
                 if (value2 == 0.0) throw new CalculatorException("", 5);
-                else return value1 / value2;
+                else result = value1 / value2;
             }
-            case "^" -> {
-                return Math.pow(value1, value2);
+            case "^" -> result = Math.pow(value1, value2);
+            default -> {
+                return result;
             }
         }
-        return 0.0;
+        return result;
     }
 
     /**
