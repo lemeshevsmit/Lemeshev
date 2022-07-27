@@ -1,27 +1,55 @@
 package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
 
-import java.util.List;
+import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
+
+import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
 
 /**
- * this class display lexeme
+ * This class have algorithm of recursive parse of
+ * mathematics expression. Its based on lexeme and analyze him
+ * <p>
+ * ------------------------------------------------------------------
+ * PARSER GRAMMATICAL RULES:
+ * ------------------------------------------------------------------
+ * calculate : secondPriority* END ;
+ * secondPriority: firstPriority [ '+' | '-' firstPriority ]* ;
+ * firstPriority : result [ '*' | '/' | '^' result ]* ;                                  приоритет
+ * result : NUMBER | FUNCTIONS{} | [ '(' secondPriority ')' ] ;
+ * ------------------------------------------------------------------
  *
  * @author Aleksandr Lemeshev
  * @since 26.07.2022
  */
+
 public class Lexeme {
     LexemeType type;
     String value;
 
+    /**
+     * Constructor with parameters.
+     *
+     * @param type  Class of lexeme type
+     * @param value String interpretation
+     */
     public Lexeme(LexemeType type, String value) {
         this.type = type;
         this.value = value;
     }
 
+    /**
+     * Constructor with parameters.
+     *
+     * @param type  Class of lexeme type
+     * @param value Character symbol interpretation
+     */
     public Lexeme(LexemeType type, Character value) {
         this.type = type;
         this.value = value.toString();
     }
 
+    /**
+     * This class describes type of lexeme
+     */
     public enum LexemeType {
         LEFT_BRACKET, RIGHT_BRACKET,
         SIN, COS, TAN, ATAN, LOG2, LOG10, SQRT,
@@ -29,121 +57,173 @@ public class Lexeme {
         NUMBER, PARAMETER, END
     }
 
-    @Override
-    public String toString() {
-        return "Lexeme{" +
-                "type=" + type +
-                ", value='" + value + '\'' +
-                '}';
-    }
-
-
-    /*------------------------------------------------------------------
-     * PARSER GRAMMATICAL RULES
-     *------------------------------------------------------------------*/
-
-//    formula : lastPriority* END ;   *-many limes; secondPriority it's operation[+;-] END - end of formula
-//
-//    secondPriority: firstPriority ( ( '+' | '-' ) firstPriority )* ;   *-many limes; firstPriority it's operation[*;/]
-//
-//    firstPriority : value ( ( '*' | '/' ) value )* ;  *-many limes; value it's result of function or POW operation
-//
-//    value : NUMBER | FUNCTIONS | POW '(' formula ')' ;
-
-    public static double formula(Formula lexemes) {
-        Lexeme lexeme = lexemes.next();
-        if (lexeme.type == LexemeType.END) {
+    /**
+     * This method is start of analyze of formula.
+     * I check END of formula if it false I start analyze
+     * else return result.
+     *
+     * @param formula class with list of lexeme
+     * @return result of calculate formula
+     * @throws CalculatorException error in formula
+     */
+    public static double calculate(Formula formula)
+            throws CalculatorException {
+        Lexeme lexeme = formula.nextElement();
+        if (lexeme.type == END) {
             return 0.0;
         } else {
-            lexemes.back();
-            return secondPriority(lexemes);
-        }
-    }
-
-    public static double secondPriority(Formula lexemes) {
-        double value = firstPriority(lexemes);
-        while (true) {
-            Lexeme lexeme = lexemes.next();
-            switch (lexeme.type) {
-                case PLUS -> value += firstPriority(lexemes);
-                case MINUS -> value -= firstPriority(lexemes);
-                case END, RIGHT_BRACKET -> {
-                    lexemes.back();
-                    return value;
-                }
-                default -> throw new RuntimeException("Unexpected token: " + lexeme.value
-                        + " at position: " + lexemes.getPos());
-            }
-        }
-    }
-
-    public static double firstPriority(Formula lexemes) {
-        double value = value(lexemes);
-        while (true) {
-            Lexeme lexeme = lexemes.next();
-            switch (lexeme.type) {
-                case MULTIPLY -> value *= value(lexemes);
-                case DIVIDE -> value /= value(lexemes);
-                case END, RIGHT_BRACKET, PLUS, MINUS -> {
-                    lexemes.back();
-                    return value;
-                }
-                default -> throw new RuntimeException("Unexpected token: " + lexeme.value
-                        + " at position: " + lexemes.getPos());
-            }
-        }
-    }
-
-    public static double value(Formula lexemes) {
-        Lexeme lexeme = lexemes.next();
-        switch (lexeme.type) {
-            case NUMBER:
-                return Double.parseDouble(lexeme.value);
-            case POW: {
-                double value = Double.parseDouble(lexeme.value);
-                lexeme = lexemes.next();
-                //if(lexeme.type=)
-            }
-            case SIN,COS,TAN,ATAN,LOG2,LOG10,SQRT:{
-                double value = secondPriority(lexemes);
-            }
-            case LEFT_BRACKET:
-                double value = secondPriority(lexemes);
-                lexeme = lexemes.next();
-                if (lexeme.type != Lexeme.LexemeType.RIGHT_BRACKET) {
-                    throw new RuntimeException("Unexpected token: " + lexeme.value
-                            + " at position: " + lexemes.getPos());
-                }
-                return value;
-            default:
-                throw new RuntimeException("Unexpected token: " + lexeme.value
-                        + " at position: " + lexemes.getPos());
+            formula.backPosition();
+            return secondPriority(formula);
         }
     }
 
     /**
-     * inner class of Lexeme where I save formula
-     * and last position
+     * This method check last priority operation [+;-] In switch
+     * I select kay == "lexeme type" and do operations. If operations
+     * END or RIGHT_BRACKET I came back to previously method.
+     *
+     * @param formula class with list of lexeme
+     * @return result of calculate lexeme
+     * @throws CalculatorException error in formula
      */
-    public static class Formula {
-        public int pos;
-        public List<Lexeme> lexemes;
-
-        public Formula(List<Lexeme> lexemes) {
-            this.lexemes = lexemes;
+    public static double secondPriority(Formula formula)
+            throws CalculatorException {
+        double value = firstPriority(formula);
+        while (true) {
+            Lexeme lexeme = formula.nextElement();
+            switch (lexeme.type) {
+                case PLUS -> value += firstPriority(formula);
+                case MINUS -> value -= firstPriority(formula);
+                case END, RIGHT_BRACKET -> {
+                    formula.backPosition();
+                    return value;
+                }
+                default -> throw new CalculatorException(lexeme.type.toString(), 11);
+            }
         }
+    }
 
-        public Lexeme next() {
-            return lexemes.get(pos++);
+    /**
+     * This method int next level priority of math operation.
+     * In this method I check MULTIPLY, DIVIDE, POW and do
+     * this mathematics operation. If I select previously lexeme type
+     * I return back and return value.
+     *
+     * @param formula class with list of lexeme
+     * @return result of calculate lexeme
+     * @throws CalculatorException error in formula
+     */
+    public static double firstPriority(Formula formula)
+            throws CalculatorException {
+        double value = result(formula);
+        while (true) {
+            Lexeme lexeme = formula.nextElement();
+            switch (lexeme.type) {
+                case MULTIPLY -> value *= result(formula);
+                case DIVIDE -> {
+                    double res = result(formula);
+                    if (res == 0.0) throw new CalculatorException("", 5);
+                    else value /= res;
+                }
+                case POW -> value = Math.pow(value, result(formula));
+                case END, RIGHT_BRACKET, PLUS, MINUS -> {
+                    formula.backPosition();
+                    return value;
+                }
+                default -> throw new CalculatorException(lexeme.type.toString(), 11);
+            }
         }
+    }
 
-        public void back() {
-            pos--;
+    /**
+     * This method analyze last lexeme types: NUMBER and
+     * mathematics functions I named this pool FUNCTIONS. If I select
+     * number I return value, if i select function I call method
+     * calculateFunction() else I check LEFT_BRACKET maybe we have FORMULA in
+     * next lexeme. If I select UNKNOWN type I throw calculator exception.
+     *
+     * @param formula class with list of lexeme
+     * @return result of calculate lexeme
+     * @throws CalculatorException error in formula
+     */
+    public static double result(Formula formula) throws CalculatorException {
+        Lexeme lexeme = formula.nextElement();
+        switch (lexeme.type) {
+            case NUMBER:
+                try {
+                    return Double.parseDouble(lexeme.value);
+                } catch (NumberFormatException e) {
+                    throw new CalculatorException(lexeme.value, 6);
+                }
+            case SIN, COS, TAN, ATAN, LOG2, LOG10, SQRT: {
+                double value = result(formula);
+                return calculateFunction(lexeme.type, value);
+            }
+            case LEFT_BRACKET: {
+                return checkSubFormula(formula);
+            }
+            default:
+                throw new CalculatorException(lexeme.type.toString(), 11);
         }
+    }
 
-        public int getPos() {
-            return pos;
+    /**
+     * This method check sub formula. I call secondPriority(formula);
+     * After analyze if we get RIGHT_BRACKET it's good, else
+     * we can get END == exit of method and return value to previously method.
+     *
+     * @param formula class with list of lexeme
+     * @return result of calculate lexeme
+     * @throws CalculatorException error in formula
+     */
+    private static double checkSubFormula(Formula formula) throws CalculatorException {
+        Lexeme lexeme;
+        double value = secondPriority(formula);
+        lexeme = formula.nextElement();
+        if (lexeme.type != RIGHT_BRACKET) {
+            if (lexeme.type == END) {
+                formula.backPosition();
+                return value;
+            } else throw new CalculatorException(lexeme.type.toString(), 11);
         }
+        return value;
+    }
+
+    /**
+     * This method calculate value of mathematics functions. In this method
+     * I check all mathematics exception who can be and all parameters of exist.
+     *
+     * @param type  lexeme type
+     * @param value value of argument
+     * @return result of calculate lexeme
+     * @throws CalculatorException error in formula
+     */
+    private static double calculateFunction(LexemeType type, double value)
+            throws CalculatorException {
+        double result = 0.0;
+        if (value < 0.0 & (type == LOG2 || type == LOG10 || type == SQRT))
+            throw new CalculatorException(type + "] incorrect number=" + value, 10);
+        switch (type) {
+            case SIN -> {
+                if (value % Math.PI == 0.0) result = 0.0;
+                else result = Math.sin(value);
+            }
+            case COS -> {
+                if ((value % (Math.PI / 2.0) == 0.0) & (value % Math.PI != 0.0))
+                    result = 0.0;
+                else result = Math.cos(value);
+            }
+            case TAN -> {
+                if (value % (Math.PI / 2.0) == 0.0)
+                    throw new CalculatorException(Double.toString(value), 3);
+                result = Math.tan(value);
+            }
+            case ATAN -> result = Math.atan(value);
+            case LOG2 -> result = Math.log(value) / Math.log(2);
+            case LOG10 -> result = Math.log10(value);
+            case SQRT -> result = Math.sqrt(value);
+        }
+        return result;
     }
 }
 

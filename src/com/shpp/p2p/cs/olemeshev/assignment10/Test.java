@@ -14,22 +14,22 @@ public class Test {
     public static void main(String[] args) throws FileNotFoundException {
         String[][] correctTests = new String[][]{
                 {"1 + a * 2", "a = 2"},
-                {"2 * 4 - 6 / 3 + 6 + 1 / 3 - 6 + -1 * -1"},
+                {"2*4-6/3+6+1/3-6+-1* -1"},
                 {"1 + 3 + 5"},
-                {"1 - 3 - 5"},
-                {"1 * 3 * 5"},
+                {"1,0-3.0-5"},
+                {"1*3*5"},
 
-                {"-1 * -3 * -5"},
+                {"-1*-3*-5"},
                 {"-1"},
-                {"4 / 2 * 2 + 2 ^ 3 + 3 - -1 - 3 + -5 * 2 + 10"},
-                {"5 * 4 / 2"},
-                {"5 / 4 * 2"},
+                {"4/2*2+2^3+3--1-3+-5*2+10"},
+                {"5*4/2"},
+                {"5/4*2"},
 
-                {"3 ^ -1"},
-                {"a ^ b + a * 2 - 4 * c", "a = 2", "b = 3", "c = 1"},
-                {"a ^ b / a * 2 - 4 * c * a", "a = 2", "b = 3", "x = 0", "c = 1"},
-                {"1 + a * 2", "a = -2.0D"},
-                {"1 + a * 2", "a = 2 * 3 ^ 2"}
+                {"3^-1"},
+                {"a^b+a*2-4*c a=2 b=3 c=1"},
+                {"a^b/a*2-4*c*a a=2 b=3 x=0 c=1"},
+                {"1+a*2", "a=-2.0D"},
+                {"1+a*2 a=2*3^2"}
         };
         String[] correctAnswers = new String[]{
                 "5.0", String.valueOf(7 + 1.0 / 3), "9.0", "-7.0", "15.0",
@@ -72,16 +72,16 @@ public class Test {
                 ""
         };
 
-        testing(correctTests, correctAnswers);
-        testing(incorrectTests, incorrectAnswers);
+//        testing(correctTests, correctAnswers);
+//        testing(incorrectTests, incorrectAnswers);
 
 
-        //start();
+        start();
     }
 
     static void start() {
-        String[] test = new String[]{"1 + a * 2", "t =tr"};
-        Assignment10Part1.main(test);
+        String[] test = new String[]{"1+a&2","a=2"};
+        com.shpp.p2p.cs.rvainer.assignment10.Assignment10Part1.main(test);
     }
 
     /**

@@ -1,16 +1,14 @@
 package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
 
-import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
-import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.formula;
-
 import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.LinkedList;
+
+import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
 
 
 public class RecursiveParser {
-    private static List<Lexeme> finalFormula = new ArrayList<>();
+    private static Formula formula;
 
 
     /////
@@ -19,43 +17,31 @@ public class RecursiveParser {
     // минус минус;
 
 
-    public static void main(String[] args) throws CalculatorException {
+    public static void main(String[] args) {
+        try {
 //        if (args == null || args[0].equals("")
 //                || Arrays.equals(args, new String[]{})) {
 //            throw new CalculatorException(Arrays.toString(args), 0);
 //        }
 
-        //sin(0) - sqrt(64) - (3)* (2^(log2(64)/ 3 + 5* (3 - 2)) * 2
-        String formula = "122 - 34 - 3* (55 + 5* (3 - 2)) * 2".replaceAll(" ", "");
-        //HashMap<String, String[]> parameters = getParameters(args);
-        finalFormula = lexemeParser(formula);
-        //createFinalFormula(lexemeFormula);
-        Lexeme.Formula f = new Lexeme.Formula(finalFormula);
+            //sin(0) - sqrt(64) - (3)* (2^(log2(64)/ 3 + 5* (3 - 2)) * 2
+            String line = "sin(0) - sqrt(64) - (3)* (2^(log2(64)/ 3 + 5* (3 - 2)) * 2".replaceAll(" ", "");
+            //HashMap<String, String[]> parameters = getParameters(args);
+            LinkedList<Lexeme> listOfLexeme = lexemeParser(line);
 
 
-        System.out.println(formula(f));
+            //createFinalFormula(lexemeFormula);
+
+
+            formula = new Formula(listOfLexeme);
+            System.out.println(Lexeme.calculate(formula));
+        } catch (CalculatorException ignored) {
+        }
     }
 
-//    private static void createFinalFormula(List<Lexeme> lexemeFormula) {
-//        for (Lexeme lexeme : lexemeFormula) {
-//            if (lexeme.type == PARAMETER) {
-//                switch (lexeme.value) {
-//                    case "sin" -> lexeme.type = SIN;
-//                    case "cos" -> lexeme.type = COS;
-//                    case "log2" -> lexeme.type = LOG2;
-//                    case "log10" -> lexeme.type = LOG10;
-//                    case "sqrt" -> lexeme.type = SQRT;
-//                    case "atan" -> lexeme.type = ATAN;
-//                    case "tan" -> lexeme.type = TAN;
-//                }
-//            }
-//            finalFormula.add(lexeme);
-//        }
-//    }
-
-    private static List<Lexeme> lexemeParser(String line)
+    private static LinkedList<Lexeme> lexemeParser(String line)
             throws CalculatorException {
-        ArrayList<Lexeme> lexemes = new ArrayList<>();
+        LinkedList<Lexeme> lexemes = new LinkedList<>();
         for (int pos = 0; pos < line.length(); pos++) {
             char c = line.charAt(pos);
             switch (c) {
@@ -66,31 +52,29 @@ public class RecursiveParser {
                 case '*' -> lexemes.add(new Lexeme(MULTIPLY, c));
                 case '/' -> lexemes.add(new Lexeme(DIVIDE, c));
                 case '^' -> lexemes.add(new Lexeme(POW, c));
-                default -> pos = parseArgument(line, lexemes, pos);
+                default -> pos = parseArgument(line, pos, lexemes);
             }
         }
         lexemes.add(new Lexeme(END, ""));
         return lexemes;
     }
 
-    private static int parseArgument(String line,
-                                     ArrayList<Lexeme> lexemes,
-                                     int pos)
+    private static int parseArgument(String line, int pos,
+                                     LinkedList<Lexeme> lexemes)
             throws CalculatorException {
         char c = line.charAt(pos);
         if (Character.isDigit(c)) {
-            pos = getNumber(line, lexemes, pos);
+            pos = getArgument(line, pos, true, lexemes);
         } else {
             if (Character.isLetter(c)) {
-                pos = getText(line, lexemes, pos);
-            } else throw new CalculatorException("", c);
+                pos = getArgument(line, pos, false, lexemes);
+            } else throw new CalculatorException(String.valueOf(c), 9);
         }
         return pos;
     }
 
-    private static int getNumber(String line,
-                                 ArrayList<Lexeme> lexemes,
-                                 int pos) {
+    private static int getArgument(String line, int pos, boolean rule,
+                                   LinkedList<Lexeme> lexemes) {
         StringBuilder sb = new StringBuilder();
         char c = line.charAt(pos);
         do {
@@ -98,55 +82,28 @@ public class RecursiveParser {
             pos++;
             if (pos >= line.length()) break;
             c = line.charAt(pos);
-        } while (Character.isDigit(c));
+        } while (rule
+                ? Character.isDigit(c) | c == '.' | c == ','
+                : Character.isLetter(c) | Character.isDigit(c));
         pos--;
-        lexemes.add(new Lexeme(NUMBER, sb.toString()));
+        if (rule) lexemes.add(new Lexeme(NUMBER, sb.toString()));
+        else checkFunction(lexemes, sb);
         return pos;
     }
 
-    private static int getText(String line,
-                               ArrayList<Lexeme> lexemes,
-                               int pos) {
-        StringBuilder sb = new StringBuilder();
-        char c = line.charAt(pos);
-        do {
-            sb.append(c);
-            pos++;
-            if (pos >= line.length()) break;
-            c = line.charAt(pos);
-        } while (Character.isLetter(c) | Character.isDigit(c));
-        pos--;
-        lexemes.add(checkFunction(sb));
-        return pos;
-    }
 
-    private static Lexeme checkFunction(StringBuilder sb) {
+    private static void checkFunction(LinkedList<Lexeme> lexemes,
+                                      StringBuilder sb) {
         String text = sb.toString();
         switch (text) {
-            case "sin" -> {
-                return new Lexeme(SIN, text);
-            }
-            case "cos" -> {
-                return new Lexeme(COS, text);
-            }
-            case "log2" -> {
-                return new Lexeme(LOG2, text);
-            }
-            case "log10" -> {
-                return new Lexeme(LOG10, text);
-            }
-            case "sqrt" -> {
-                return new Lexeme(SQRT, text);
-            }
-            case "atan" -> {
-                return new Lexeme(ATAN, text);
-            }
-            case "tan" -> {
-                return new Lexeme(TAN, text);
-            }
-            default -> {
-                return new Lexeme(PARAMETER, text);
-            }
+            case "sin" -> lexemes.add(new Lexeme(SIN, text));
+            case "cos" -> lexemes.add(new Lexeme(COS, text));
+            case "log2" -> lexemes.add(new Lexeme(LOG2, text));
+            case "log10" -> lexemes.add(new Lexeme(LOG10, text));
+            case "sqrt" -> lexemes.add(new Lexeme(SQRT, text));
+            case "atan" -> lexemes.add(new Lexeme(ATAN, text));
+            case "tan" -> lexemes.add(new Lexeme(TAN, text));
+            default -> lexemes.add(new Lexeme(PARAMETER, text));
         }
     }
 }
