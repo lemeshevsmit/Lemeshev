@@ -12,21 +12,14 @@ import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType
 public class RecursiveParser {
     public static Formula formula;
 
-
-    /////
-
-    // дробоные числа;
-    // минус минус;
-
-
     public static void main(String[] args) {
-        args = new String[]{"a -*- b - (3)* (2^(log2(64)/ 3 + 5* (3 - 2)) * a", "a=2+2", "b= 44/11.0"};
         try {
             if (args == null || args[0].equals("")
                     || Arrays.equals(args, new String[]{})) {
                 throw new CalculatorException(Arrays.toString(args), 0);
             }
-            LinkedList<Lexeme> listOfLexeme = lexemeParser(args[0].replaceAll(" ", ""));
+            LinkedList<Lexeme> listOfLexeme =
+                    lexemeParser(args[0].replaceAll(" ", ""));
             HashMap<String, LinkedList<Lexeme>> parameters = getParameters(args);
             formula = new Formula(listOfLexeme); //save formula
             Formula f = analyzeFormula(listOfLexeme, parameters);
@@ -38,53 +31,23 @@ public class RecursiveParser {
     private static Formula analyzeFormula(LinkedList<Lexeme> lexemes,
                                           HashMap<String, LinkedList<Lexeme>> params) {
         LinkedList<Lexeme> formula = new LinkedList<>(lexemes);
+        LinkedList<Lexeme> subFormula = new LinkedList<>();
         for (int i = 0; i < formula.size(); i++) {
             Lexeme l = formula.get(i);
             if (l.type == PARAMETER) {
                 for (String kay : params.keySet()) {
                     if (l.value.equals(kay)) {
                         formula.remove(i);
-                        LinkedList<Lexeme> param = new LinkedList<>();
-                        param.add(new Lexeme(LEFT_BRACKET, "("));
-                        param.addAll(params.get(kay));
-                        param.add(new Lexeme(RIGHT_BRACKET, ")"));
-                        formula.addAll(i, param);
+                        subFormula.add(new Lexeme(LEFT_BRACKET, "("));
+                        subFormula.addAll(params.get(kay));
+                        subFormula.add(new Lexeme(RIGHT_BRACKET, ")"));
+                        formula.addAll(i, subFormula);
                         break;
                     }
                 }
             }
         }
-        ////negative
         return new Formula(formula);
-    }
-
-    private static void findNegativeNumber(LinkedList<Lexeme> formula)
-            throws CalculatorException {
-        Lexeme.LexemeType[] types = new Lexeme.LexemeType[]
-                {PARAMETER, SIN, SQRT, COS, LOG2, LOG10, TAN, ATAN};
-        for (int i = 0; i < formula.size(); i++) {
-            if (formula.get(i).type == MINUS) {
-                if ((formula.size() - (i + 1) > 0) & formula.get(i + 1).type != END) {
-                    if (formula.get(i + 1).type == NUMBER) {
-                        formula.remove(i);
-                        formula.get(i).value = "-" + formula.get(i).value;
-                    } else {
-
-                    }
-                } else throw new CalculatorException(formula.get(i).value, 11);
-                //if (formula.get(i).type== (NUMBER|PARAMETER|SIN)){}
-            }
-        }
-//        if (l.type == MINUS & (formula.size() - (i + 1) > 0) &
-//                Arrays.asList(operators).contains(formula.get(i - 1).value)) {
-//            formula.remove(i);
-//            Lexeme temp = formula.get(i);
-//            switch (temp.type) {
-//                case NUMBER -> temp.value = "-" + temp.value;
-//                case PARAMETER -> {
-//                }
-//            }
-//        }
     }
 
     /**

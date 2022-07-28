@@ -91,14 +91,20 @@ public class Lexeme {
         double value = firstPriority(formula);
         while (true) {
             Lexeme lexeme = formula.nextElement();
-            switch (lexeme.type) {
-                case PLUS -> value += firstPriority(formula);
-                case MINUS -> value -= firstPriority(formula);
-                case END, RIGHT_BRACKET -> {
-                    formula.backPosition();
-                    return value;
+            if (lexeme.type != END && formula.nextElement().type == MINUS) {
+                formula.backPosition();
+                return -secondPriority(formula);
+            } else {
+                formula.backPosition();
+                switch (lexeme.type) {
+                    case PLUS -> value += firstPriority(formula);
+                    case MINUS -> value -= firstPriority(formula);
+                    case END, RIGHT_BRACKET -> {
+                        formula.backPosition();
+                        return value;
+                    }
+                    default -> throw new CalculatorException(lexeme.type.toString(), 11);
                 }
-                default -> throw new CalculatorException(lexeme.type.toString(), 11);
             }
         }
     }
@@ -118,19 +124,25 @@ public class Lexeme {
         double value = result(formula);
         while (true) {
             Lexeme lexeme = formula.nextElement();
-            switch (lexeme.type) {
-                case MULTIPLY -> value *= result(formula);
-                case DIVIDE -> {
-                    double res = result(formula);
-                    if (res == 0.0) throw new CalculatorException("", 5);
-                    else value /= res;
+            if (lexeme.type != END && formula.nextElement().type == MINUS) {
+                formula.backPosition();
+                return -firstPriority(formula);
+            } else {
+                formula.backPosition();
+                switch (lexeme.type) {
+                    case MULTIPLY -> value *= result(formula);
+                    case DIVIDE -> {
+                        double res = result(formula);
+                        if (res == 0.0) throw new CalculatorException("", 5);
+                        else value /= res;
+                    }
+                    case POW -> value = Math.pow(value, result(formula));
+                    case END, RIGHT_BRACKET, PLUS, MINUS -> {
+                        formula.backPosition();
+                        return value;
+                    }
+                    default -> throw new CalculatorException(lexeme.type.toString(), 11);
                 }
-                case POW -> value = Math.pow(value, result(formula));
-                case END, RIGHT_BRACKET, PLUS, MINUS -> {
-                    formula.backPosition();
-                    return value;
-                }
-                default -> throw new CalculatorException(lexeme.type.toString(), 11);
             }
         }
     }
@@ -149,6 +161,8 @@ public class Lexeme {
     public static double result(Formula formula) throws CalculatorException {
         Lexeme lexeme = formula.nextElement();
         switch (lexeme.type) {
+            case MINUS:
+                return -result(formula);
             case NUMBER:
                 try {
                     return Double.parseDouble(lexeme.value);
