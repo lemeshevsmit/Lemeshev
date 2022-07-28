@@ -13,7 +13,7 @@ import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType
  * ------------------------------------------------------------------
  * calculate : secondPriority* END ;
  * secondPriority: firstPriority [ '+' | '-' firstPriority ]* ;
- * firstPriority : result [ '*' | '/' | '^' result ]* ;                                  приоритет
+ * firstPriority : result [ '*' | '/' | '^' result ]* ;
  * result : NUMBER | FUNCTIONS{} | [ '(' secondPriority ')' ] ;
  * ------------------------------------------------------------------
  *

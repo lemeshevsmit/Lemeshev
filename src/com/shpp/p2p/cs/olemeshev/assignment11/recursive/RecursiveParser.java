@@ -2,16 +2,29 @@ package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
 
 import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
 
+import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
+
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
 
-
+/**
+ * This class parse string formula with parameters in recursive method.
+ *
+ * @author Aleksandr Lemeshev
+ * @since 28.07.2022
+ */
 public class RecursiveParser {
+    //reserve formula
     public static Formula formula;
 
+    /**
+     * It's start method. In this method I catch exception, parse formula,
+     * check parameters, create new formula and calculate him.
+     *
+     * @param args input data(formula and parameters)
+     */
     public static void main(String[] args) {
         try {
             if (args == null || args[0].equals("")
@@ -28,6 +41,13 @@ public class RecursiveParser {
         }
     }
 
+    /**
+     * This method find parameters in formula and past value from HashMap
+     *
+     * @param lexemes input formula
+     * @param params  input parameters
+     * @return new formula in class Formula view
+     */
     private static Formula analyzeFormula(LinkedList<Lexeme> lexemes,
                                           HashMap<String, LinkedList<Lexeme>> params) {
         LinkedList<Lexeme> formula = new LinkedList<>(lexemes);
