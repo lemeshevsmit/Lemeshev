@@ -80,8 +80,8 @@ public class Test {
     }
 
     static void start() {
-        String[] test = new String[]{"1+a&2","a=2"};
-        com.shpp.p2p.cs.rvainer.assignment10.Assignment10Part1.main(test);
+        String[] test = new String[]{"2*4-6/3+6+1/3-6+(-1)* (-1)"};
+        com.shpp.p2p.cs.vkunitsyn.assignment10.Assignment10Part1.main(test);
     }
 
     /**
