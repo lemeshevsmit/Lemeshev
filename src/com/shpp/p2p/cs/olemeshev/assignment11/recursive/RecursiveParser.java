@@ -174,7 +174,7 @@ public class RecursiveParser {
             c = line.charAt(pos);
         } while (rule
                 ? Character.isDigit(c) | c == '.' | c == ','
-                : Character.isLetter(c) | Character.isDigit(c));
+                : Character.isLetterOrDigit(c));
         pos--;
         if (rule) lexemes.add(new Lexeme(NUMBER, sb.toString()));
         else checkFunction(lexemes, sb);
