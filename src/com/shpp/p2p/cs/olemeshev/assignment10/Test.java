@@ -26,8 +26,8 @@ public class Test {
                 {"5/4*2"},
 
                 {"3^-1"},
-                {"a^b+a*2-4*c a=2 b=3 c=1"},
-                {"a^b/a*2-4*c*a a=2 b=3 x=0 c=1"},
+                {"a^b+a*2-4*c", "a=2", "b=3", "c=1"},
+                {"a^b/a*2-4*c*a", "a=2", "b=3", "x=0", "c=1"},
                 {"1+a*2", "a=-2.0D"},
                 {"1+a*2 a=2*3^2"}
         };
@@ -72,8 +72,8 @@ public class Test {
                 ""
         };
 
-//        testing(correctTests, correctAnswers);
-//        testing(incorrectTests, incorrectAnswers);
+        testing(correctTests, correctAnswers);
+        testing(incorrectTests, incorrectAnswers);
 
 
         start();
@@ -81,7 +81,7 @@ public class Test {
 
     static void start() {
         String[] test = new String[]{"2*4-6/3+6+1/3-6+(-1)* (-1)"};
-        com.shpp.p2p.cs.vkunitsyn.assignment10.Assignment10Part1.main(test);
+        Assignment10Part1.main(test);
     }
 
     /**
