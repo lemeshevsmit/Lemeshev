@@ -10,7 +10,7 @@ import java.util.LinkedList;
  */
 public class Formula {
     //actual position in formula
-    public int position;
+    public int position = 0;
     //list of lexeme
     public LinkedList<Lexeme> listLexemes;
 

@@ -1,7 +1,5 @@
 package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
 
-import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
-
 import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
 
 /**
@@ -11,10 +9,11 @@ import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType
  * ------------------------------------------------------------------
  * PARSER GRAMMATICAL RULES:
  * ------------------------------------------------------------------
- * calculate : secondPriority* END ;
- * secondPriority: firstPriority [ '+' | '-' firstPriority ]* ;
- * firstPriority : result [ '*' | '/' | '^' result ]* ;
- * result : NUMBER | FUNCTIONS{} | [ '(' secondPriority ')' ] ;
+ * calculate : lowPriority* END ;
+ * lowPriority: midPriority [ '+' | '-' midPriority ]* ;
+ * midPriority : highPriority [ '*' | '/' highPriority ]* ;
+ * highPriority : maxPriority ['^' maxPriority ]* ;
+ * maxPriority : NUMBER | FUNCTIONS{} | [ '(' lowPriority ')' ] ;
  * ------------------------------------------------------------------
  *
  * @author Aleksandr Lemeshev
@@ -73,12 +72,12 @@ public class Lexeme {
             return 0.0;
         } else {
             formula.backPosition();
-            return secondPriority(formula);
+            return lowPriority(formula);
         }
     }
 
     /**
-     * This method check last priority operation [+;-] In switch
+     * This method check low priority operation [+;-] In switch
      * I select kay == "lexeme type" and do operations. If operations
      * END or RIGHT_BRACKET I came back to previously method.
      *
@@ -86,32 +85,27 @@ public class Lexeme {
      * @return result of calculate lexeme
      * @throws CalculatorException error in formula
      */
-    public static double secondPriority(Formula formula)
+    public static double lowPriority(Formula formula)
             throws CalculatorException {
-        double value = firstPriority(formula);
+        double value = midPriority(formula);
         while (true) {
             Lexeme lexeme = formula.nextElement();
-            if (lexeme.type != END && formula.nextElement().type == MINUS) {
-                formula.backPosition();
-                return -secondPriority(formula);
-            } else {
-                formula.backPosition();
-                switch (lexeme.type) {
-                    case PLUS -> value += firstPriority(formula);
-                    case MINUS -> value -= firstPriority(formula);
-                    case END, RIGHT_BRACKET -> {
-                        formula.backPosition();
-                        return value;
-                    }
-                    default -> throw new CalculatorException(lexeme.type.toString(), 11);
+            switch (lexeme.type) {
+                case PLUS -> value += midPriority(formula);
+                case MINUS -> value -= midPriority(formula);
+                case END, RIGHT_BRACKET -> {
+                    formula.backPosition();
+                    return value;
                 }
+                default -> throw new CalculatorException(lexeme.type +
+                        " " + formula.nextElement().type, 11);
             }
         }
     }
 
     /**
      * This method int next level priority of math operation.
-     * In this method I check MULTIPLY, DIVIDE, POW and do
+     * In this method I check MULTIPLY, DIVIDE and do
      * this mathematics operation. If I select previously lexeme type
      * I return back and return value.
      *
@@ -119,30 +113,49 @@ public class Lexeme {
      * @return result of calculate lexeme
      * @throws CalculatorException error in formula
      */
-    public static double firstPriority(Formula formula)
+    public static double midPriority(Formula formula)
             throws CalculatorException {
-        double value = result(formula);
+        double value = fighPriority(formula);
         while (true) {
             Lexeme lexeme = formula.nextElement();
-            if (lexeme.type != END && formula.nextElement().type == MINUS) {
-                formula.backPosition();
-                return -firstPriority(formula);
-            } else {
-                formula.backPosition();
-                switch (lexeme.type) {
-                    case MULTIPLY -> value *= result(formula);
-                    case DIVIDE -> {
-                        double res = result(formula);
-                        if (res == 0.0) throw new CalculatorException("", 5);
-                        else value /= res;
-                    }
-                    case POW -> value = Math.pow(value, result(formula));
-                    case END, RIGHT_BRACKET, PLUS, MINUS -> {
-                        formula.backPosition();
-                        return value;
-                    }
-                    default -> throw new CalculatorException(lexeme.type.toString(), 11);
+            switch (lexeme.type) {
+                case MULTIPLY -> value *= fighPriority(formula);
+                case DIVIDE -> {
+                    double res = fighPriority(formula);
+                    if (res == 0.0) throw new CalculatorException("", 5);
+                    else value /= res;
                 }
+                case END, RIGHT_BRACKET, PLUS, MINUS -> {
+                    formula.backPosition();
+                    return value;
+                }
+                default -> throw new CalculatorException(lexeme.type +
+                        " " + formula.nextElement().type, 11);
+            }
+        }
+    }
+
+    /**
+     * This method int height level priority of math operation. In this method
+     * I check POW and do this mathematics operation. If I select previously lexeme
+     * type I return back and return value.
+     *
+     * @param formula class with list of lexeme
+     * @return result of calculate lexeme
+     * @throws CalculatorException error in formula
+     */
+    private static double fighPriority(Formula formula) throws CalculatorException {
+        double value = maxPriority(formula);
+        while (true) {
+            Lexeme lexeme = formula.nextElement();
+            switch (lexeme.type) {
+                case POW -> value = Math.pow(value, maxPriority(formula));
+                case END, RIGHT_BRACKET, PLUS, MINUS, MULTIPLY, DIVIDE -> {
+                    formula.backPosition();
+                    return value;
+                }
+                default -> throw new CalculatorException(lexeme.type +
+                        " " + formula.nextElement().type, 11);
             }
         }
     }
@@ -158,11 +171,11 @@ public class Lexeme {
      * @return result of calculate lexeme
      * @throws CalculatorException error in formula
      */
-    public static double result(Formula formula) throws CalculatorException {
+    public static double maxPriority(Formula formula) throws CalculatorException {
         Lexeme lexeme = formula.nextElement();
         switch (lexeme.type) {
             case MINUS:
-                return -result(formula);
+                return -maxPriority(formula);
             case NUMBER:
                 try {
                     return Double.parseDouble(lexeme.value);
@@ -170,14 +183,15 @@ public class Lexeme {
                     throw new CalculatorException(lexeme.value, 6);
                 }
             case SIN, COS, TAN, ATAN, LOG2, LOG10, SQRT: {
-                double value = result(formula);
+                double value = maxPriority(formula);
                 return calculateFunction(lexeme.type, value);
             }
             case LEFT_BRACKET: {
                 return checkSubFormula(formula);
             }
             default:
-                throw new CalculatorException(lexeme.type.toString(), 11);
+                throw new CalculatorException(lexeme.type +
+                        " " + formula.nextElement().type, 11);
         }
     }
 
@@ -192,14 +206,15 @@ public class Lexeme {
      */
     private static double checkSubFormula(Formula formula) throws CalculatorException {
         Lexeme lexeme;
-        double value = secondPriority(formula);
+        double value = lowPriority(formula);
         lexeme = formula.nextElement();
         if (lexeme.type != RIGHT_BRACKET) {
             if (lexeme.type == END) {
                 formula.backPosition();
                 return value;
-            } else throw new CalculatorException(lexeme.type.toString(), 11);
+            } else throw new CalculatorException(lexeme.type + " " + formula.nextElement().type, 11);
         }
+
         return value;
     }
 

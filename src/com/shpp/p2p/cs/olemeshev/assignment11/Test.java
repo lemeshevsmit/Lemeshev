@@ -1,5 +1,7 @@
 package com.shpp.p2p.cs.olemeshev.assignment11;
 
+import com.shpp.p2p.cs.olemeshev.assignment11.recursive.Parser;
+
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -36,9 +38,9 @@ public class Test {
 
         };
         String[] incorrectAnswers = new String[]{
-                "Negative number=-5.0 in function [sqrt]. Please, check input value.",
-                "Negative number=-50.0 in function [log]. Please, check input value.",
-                "Negative number=-30.0 in function [log]. Please, check input value.",
+                "In function [SQRT] incorrect number=-5.0. Please, check input arguments.",
+                "In function [LOG2] incorrect number=-50.0. Please, check input arguments.",
+                "In function [LOG10] incorrect number=-30.0. Please, check input arguments.",
                 "Function [tan] doesn't exist in number=PI/2 in peroid PI. Please, check input value.",
                 "Divide by zero in formula.",
                 "Divide by zero in formula.",
@@ -58,10 +60,8 @@ public class Test {
 
     static void start() {
         String[] test = new String[]{"1 + a * 2", "t =tr"};
-        try {
-            Assignment11Part1.main(test);
-        } catch (CalculatorException ignored) {
-        }
+            Parser.main(test);
+
     }
 
     /**
@@ -82,10 +82,7 @@ public class Test {
         // меняю консоль на новую для вывода в файл.
         System.setOut(console);
         for (String[] test : tests) {
-            try {
-                Assignment11Part1.main(test);
-            } catch (CalculatorException ignored) {
-            }
+                Parser.main(test);
         }
         System.setOut(out);
 

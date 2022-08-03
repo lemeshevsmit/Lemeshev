@@ -1,12 +1,10 @@
 package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
 
-import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
-
-import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
-
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
+
+import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
 
 
 /**
@@ -15,7 +13,7 @@ import java.util.LinkedList;
  * @author Aleksandr Lemeshev
  * @since 28.07.2022
  */
-public class RecursiveParser {
+public class Parser {
     //reserve formula
     public static Formula formula;
 
@@ -32,7 +30,7 @@ public class RecursiveParser {
                 throw new CalculatorException(Arrays.toString(args), 0);
             }
             LinkedList<Lexeme> listOfLexeme =
-                    lexemeParser(args[0].replaceAll(" ", ""));
+                    lexemeCreator(args[0].replaceAll(" ", ""));
             HashMap<String, LinkedList<Lexeme>> parameters = getParameters(args);
             formula = new Formula(listOfLexeme); //save formula
             Formula f = analyzeFormula(listOfLexeme, parameters);
@@ -62,6 +60,7 @@ public class RecursiveParser {
                         subFormula.addAll(params.get(kay));
                         subFormula.add(new Lexeme(RIGHT_BRACKET, ")"));
                         formula.addAll(i, subFormula);
+                        subFormula = new LinkedList<>();
                         break;
                     }
                 }
@@ -85,9 +84,10 @@ public class RecursiveParser {
             for (int i = 1; i < args.length; i++) {
                 String[] value = args[i].replaceAll(" ", "").split("=");
                 if (value.length > 2) throw new CalculatorException("", 4);
+                if (value.length < 2) continue;
                 String kay = value[0];
                 if (!parameters.containsKey(kay)) {
-                    LinkedList<Lexeme> list = lexemeParser(value[1]);
+                    LinkedList<Lexeme> list = lexemeCreator(value[1]);
                     list.removeLast(); //remove END
                     parameters.put(kay, list);
                 }
@@ -106,7 +106,7 @@ public class RecursiveParser {
      * @return list of Lexeme
      * @throws CalculatorException calculator error
      */
-    private static LinkedList<Lexeme> lexemeParser(String line)
+    private static LinkedList<Lexeme> lexemeCreator(String line)
             throws CalculatorException {
         LinkedList<Lexeme> lexemes = new LinkedList<>();
         for (int pos = 0; pos < line.length(); pos++) {
@@ -155,7 +155,7 @@ public class RecursiveParser {
      * This method get argument, it's can be one symbol or many.
      * In number I add all digit, '.' and ',' symbols. In parameter I add
      * all letter and digit, then I check this parameter may be it's
-     * mathematics function in method checkFunction()
+     * mathematics function in method createTextLexeme()
      *
      * @param line    input formula
      * @param pos     position of character symbol
@@ -174,10 +174,10 @@ public class RecursiveParser {
             c = line.charAt(pos);
         } while (rule
                 ? Character.isDigit(c) | c == '.' | c == ','
-                : Character.isLetterOrDigit(c));
+                : Character.isLetter(c) | Character.isDigit(c));
         pos--;
         if (rule) lexemes.add(new Lexeme(NUMBER, sb.toString()));
-        else checkFunction(lexemes, sb);
+        else createTextLexeme(lexemes, sb);
         return pos;
     }
 
@@ -188,8 +188,8 @@ public class RecursiveParser {
      * @param lexemes list of lexeme
      * @param sb      analyzed string parameter
      */
-    private static void checkFunction(LinkedList<Lexeme> lexemes,
-                                      StringBuilder sb) {
+    private static void createTextLexeme(LinkedList<Lexeme> lexemes,
+                                         StringBuilder sb) {
         String text = sb.toString();
         switch (text) {
             case "sin" -> lexemes.add(new Lexeme(SIN, text));
