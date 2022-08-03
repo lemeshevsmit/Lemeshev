@@ -1,300 +1,205 @@
 package com.shpp.p2p.cs.olemeshev.assignment11;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
+
+import static com.shpp.p2p.cs.olemeshev.assignment11.Lexeme.LexemeType.*;
+
 
 /**
- * This class calculate formula with parameters
+ * This class parse string formula with parameters in recursive method.
  *
- * @author Alexandr Lemeshev
- * @since 25.07.2022
+ * @author Aleksandr Lemeshev
+ * @since 28.07.2022
  */
 public class Assignment11Part1 {
-    //array with mathematics operators
-    private static final String[] OPERATORS = new String[]
-            {"^", "/", "*", "-", "+"};
-    private static final String[] FUNCTIONS = new String[]
-            {"sin", "cos", "tan", "atan", "log2", "sqrt", "log10"};
+    //reserve formula
+    public static Formula formula;
 
     /**
-     * This is main method. In this method I check start parameters and
-     * load other methods for calculate result of start formula
+     * It's start method. In this method I catch exception, parse formula,
+     * check parameters, create new formula and calculate him.
      *
-     * @param args start parameters (formula and parameters)
+     * @param args input data(formula and parameters)
      */
-    public static void main(String[] args) throws CalculatorException {
-        if (args == null || args[0].equals("")
-                || Arrays.equals(args, new String[]{})) {
-            throw new CalculatorException(Arrays.toString(args), 0);
-        }
-        HashMap<String, String[]> parameters = getParameters(args);
-        String resultFormula = checkFunction(args[0], parameters);
-        System.out.println(calculate(resultFormula, parameters));
-    }
-
-    /**
-     * This method create final view of formula, find all
-     * mathematics operators and calculate result value.
-     *
-     * @param line      Start formula
-     * @param variables start parameters
-     * @return result of calculate formula
-     * @throws CalculatorException incorrect formula
-     */
-    static double calculate(String line, HashMap<String, String[]> variables)
-            throws CalculatorException {
-        String[] formula = getFormula(line, variables);
-        for (String operator : OPERATORS) {
-            formula = findOperation(formula, operator);
-            Objects.requireNonNull(formula); //throw exception if null (exit)
-        }
-        if (formula.length > 1) throw new CalculatorException(formula[1], 7);
-        else return Double.parseDouble(formula[0]);
-    }
-
-    /**
-     * This method create final view of formula without parameters
-     *
-     * @param line      start formula
-     * @param variables list with parameters
-     * @return final formula
-     */
-    private static String[] getFormula(String line,
-                                       HashMap<String, String[]> variables) {
-        String[] formula = createFormula(line);
-        if (variables.size() > 0) {
-            LinkedList<String> newFormula = new LinkedList<>();
-            for (String s : formula) {
-                newFormula.add(s);
-                for (String kay : variables.keySet()) {
-                    if (s.equals(kay)) {
-                        newFormula.removeLast();
-                        newFormula.addAll(Arrays.asList(variables.get(kay)));
-                    }
-                }
+    public static void main(String[] args) {
+        try {
+            if (args == null || args[0].equals("")
+                    || Arrays.equals(args, new String[]{})) {
+                throw new CalculatorException(Arrays.toString(args), 0);
             }
-            formula = newFormula.toArray(new String[0]);
+            LinkedList<Lexeme> listOfLexeme =
+                    lexemeCreator(args[0].replaceAll(" ", ""));
+            HashMap<String, LinkedList<Lexeme>> parameters = getParameters(args);
+            formula = new Formula(listOfLexeme); //save formula
+            Formula f = analyzeFormula(listOfLexeme, parameters);
+            System.out.println(Lexeme.calculate(f));
+        } catch (CalculatorException ignored) {
         }
-        return formula;
     }
 
     /**
-     * This method return formula in arrays view. I split string line by
-     * symbol and check him to value and operator and create array.
+     * This method find parameters in formula and past value from HashMap
      *
-     * @param line Start formula
-     * @return formula in array view
+     * @param lexemes input formula
+     * @param params  input parameters
+     * @return new formula in class Formula view
      */
-    private static String[] createFormula(String line) {
-        ArrayList<String> formula = new ArrayList<>();
-        StringBuilder sb = new StringBuilder();
-        String[] temp = line.replaceAll(" ", "").split("");
-        for (int i = 0; i < temp.length; i++) {
-            if (Arrays.asList(OPERATORS).contains(temp[i])) {
-                if (sb.isEmpty()) {
-                    if (temp[i].equals("-")) {
-                        if (Arrays.asList(OPERATORS).contains(temp[i + 1])) {
-                            formula.add(temp[i]);
-                        } else sb.append(temp[i]);
-                    } else formula.add(temp[i]);
-                } else {
-                    formula.add(sb.toString());
-                    formula.add(temp[i]);
-                    sb = new StringBuilder();
-                }
-            } else i = checkExponentView(sb, temp, i);
-        }
-        if (!sb.isEmpty()) formula.add(sb.toString());
-        return formula.toArray(new String[0]);
-    }
-
-
-    /**
-     * this method check exponential view in formula if we have symbol "E"
-     *
-     * @param sb   new formula
-     * @param temp array of symbols in formula
-     * @param i    current position
-     * @return new position and rewrite sb
-     */
-    private static int checkExponentView(StringBuilder sb, String[] temp, int i) {
-        if (temp[i].equals("E")
-                && (i + 3 < temp.length)
-                && temp[i + 1].equals("-")
-                && Character.isDigit(temp[i + 2].charAt(0))
-                && Character.isDigit(temp[i + 3].charAt(0))) {
-            sb.append(temp[i]).append(temp[i + 1]).append(temp[i + 2]).append(temp[i + 3]);
-            i = i + 3;
-        } else sb.append(temp[i]);
-        return i;
-    }
-
-    /**
-     * This method find mathematics operators and calculate value with him
-     * after return formula without found operator
-     *
-     * @param formula formula with operators
-     * @param o       string value of operator
-     * @return new formula without @param {o} operator
-     */
-    private static String[] findOperation(String[] formula, String o) throws CalculatorException {
-        LinkedList<String> temp = new LinkedList<>();
-        for (int i = 0; i < formula.length; i++) {
-            if (formula[i].equals(o)) {
-                try {
-                    double value1 = Double.parseDouble(temp.getLast());
-                    double value2 = Double.parseDouble(formula[i + 1]);
-                    temp.removeLast();
-                    temp.add(Double.toString(operator(value1, value2, o)));
-                    i++;
-                } catch (NumberFormatException e) {
-                    throw new CalculatorException(e.getMessage(), 6);
-                }
-            } else temp.add(formula[i]);
-        }
-        return temp.toArray(new String[0]);
-    }
-
-
-    /**
-     * This method return list with input parameters. If we
-     * don't input parameters return empty list.
-     *
-     * @param parameters parameters from console
-     * @return list with all input parameters
-     * @throws CalculatorException incorrect parameters
-     */
-    static HashMap<String, String[]> getParameters(String[] parameters)
-            throws CalculatorException {
-        HashMap<String, String[]> list = new HashMap<>();
-        if (parameters.length > 1)
-            for (int i = 1; i < parameters.length; i++) {
-                String[] value = parameters[i].split("=");
-                if (value.length > 2) throw new CalculatorException("", 4);
-                String kay = value[0].replaceAll(" ", "");
-                if (!list.containsKey(kay)) {
-                    value[1] = checkFunction(value[1], new HashMap<>());
-                    list.put(kay, createFormula(value[1]));
-                }
-            }
-        return list;
-    }
-
-    /**
-     * this method check formula to contains "(",")" and functions
-     * if we have this elements calculate him
-     *
-     * @param s          input formula
-     * @param parameters list with parameters
-     * @return new formula without functions and "(", ")"
-     * @throws CalculatorException incorrect value
-     */
-    private static String checkFunction(String s, HashMap<String, String[]> parameters)
-            throws CalculatorException {
-        while (s.contains("(")) {
-            int start = s.lastIndexOf('(');
-            int end = s.substring(start).indexOf(')');
-            if (end == -1) throw new CalculatorException(")", 8);
-            double result;
-            for (int i = 0; i < FUNCTIONS.length; i++) {
-                if (start - FUNCTIONS[i].length() < 0) {
-                    result = calculate(s.substring(start + 1, start + end), parameters);
-                    s = s.replace(s.substring(start, start + end + 1), String.valueOf(result));
-                    break;
-                }
-                String subFormula = s.substring(start - FUNCTIONS[i].length(), start + end + 1);
-                if (subFormula.contains(FUNCTIONS[i])) {
-                    int index = start - FUNCTIONS[i].length() - 1;
-                    if ((i == 2) & (index >= 0) && (s.substring(index, index + 1).contains("a"))) {
-                        continue;
-                    } else {
-                        result = calculate(subFormula.substring(subFormula.indexOf('(') + 1,
-                                subFormula.indexOf(')')), parameters);
-                        result = function(result, FUNCTIONS[i]);
-                        s = s.replace(subFormula, String.valueOf(result));
+    private static Formula analyzeFormula(LinkedList<Lexeme> lexemes,
+                                          HashMap<String, LinkedList<Lexeme>> params) {
+        LinkedList<Lexeme> formula = new LinkedList<>(lexemes);
+        LinkedList<Lexeme> subFormula = new LinkedList<>();
+        for (int i = 0; i < formula.size(); i++) {
+            Lexeme l = formula.get(i);
+            if (l.type == PARAMETER) {
+                for (String kay : params.keySet()) {
+                    if (l.value.equals(kay)) {
+                        formula.remove(i);
+                        subFormula.add(new Lexeme(LEFT_BRACKET, "("));
+                        subFormula.addAll(params.get(kay));
+                        subFormula.add(new Lexeme(RIGHT_BRACKET, ")"));
+                        formula.addAll(i, subFormula);
+                        subFormula = new LinkedList<>();
                         break;
                     }
                 }
-                if (i == FUNCTIONS.length - 1) {
-                    result = calculate(s.substring(start + 1, start + end), parameters);
-                    s = s.replace(s.substring(start, start + end + 1), String.valueOf(result));
+            }
+        }
+        return new Formula(formula);
+    }
+
+    /**
+     * this method get parameters from string array args  and create
+     * LinkedList of Lexeme with parsed arguments
+     *
+     * @param args input parameters
+     * @return HashMap with lists of lexeme
+     * @throws CalculatorException calculator error
+     */
+    private static HashMap<String, LinkedList<Lexeme>> getParameters(String[] args)
+            throws CalculatorException {
+        HashMap<String, LinkedList<Lexeme>> parameters = new HashMap<>();
+        if (args.length > 1) {
+            for (int i = 1; i < args.length; i++) {
+                String[] value = args[i].replaceAll(" ", "").split("=");
+                if (value.length > 2) throw new CalculatorException("", 4);
+                if (value.length < 2) continue;
+                String kay = value[0];
+                if (!parameters.containsKey(kay)) {
+                    LinkedList<Lexeme> list = lexemeCreator(value[1]);
+                    list.removeLast(); //remove END
+                    parameters.put(kay, list);
                 }
             }
         }
-        return s;
+        return parameters;
     }
 
     /**
-     * This method do arithmetical operation with two double variable
+     * This method create LinkedList of Lexeme from input string line.
+     * I use switch - case Character, if I parse mathematics operation
+     * or (left/right) bracket I add new Lexeme else I call method
+     * parseArgument()
      *
-     * @param value1 first value
-     * @param value2 second value
-     * @param o      String association of math operation
-     * @return result of arithmetical operation
-     * @throws CalculatorException Divide by zero exception
+     * @param line input string formula
+     * @return list of Lexeme
+     * @throws CalculatorException calculator error
      */
-    static double operator(double value1, double value2, String o)
+    private static LinkedList<Lexeme> lexemeCreator(String line)
             throws CalculatorException {
-        double result = 0.0;
-        switch (o) {
-            case "+" -> result = value1 + value2;
-            case "-" -> result = value1 - value2;
-            case "*" -> result = value1 * value2;
-            case "/" -> {
-                if (value2 == 0.0) throw new CalculatorException("", 5);
-                else result = value1 / value2;
-            }
-            case "^" -> result = Math.pow(value1, value2);
-            default -> {
-                return result;
+        LinkedList<Lexeme> lexemes = new LinkedList<>();
+        for (int pos = 0; pos < line.length(); pos++) {
+            char c = line.charAt(pos);
+            switch (c) {
+                case '(' -> lexemes.add(new Lexeme(LEFT_BRACKET, c));
+                case ')' -> lexemes.add(new Lexeme(RIGHT_BRACKET, c));
+                case '+' -> lexemes.add(new Lexeme(PLUS, c));
+                case '-' -> lexemes.add(new Lexeme(MINUS, c));
+                case '*' -> lexemes.add(new Lexeme(MULTIPLY, c));
+                case '/' -> lexemes.add(new Lexeme(DIVIDE, c));
+                case '^' -> lexemes.add(new Lexeme(POW, c));
+                default -> pos = parseArgument(line, pos, lexemes);
             }
         }
-        return result;
+        lexemes.add(new Lexeme(END, ""));
+        return lexemes;
     }
 
     /**
-     * This method do arithmetical operation with variable
+     * This method check other character symbol (digit or letter)
+     * If symbol digit - may be it's - NUMBER, if symbol letter -
+     * may be PARAMETER or FUNCTION
      *
-     * @param value input value
-     * @param f     input function
-     * @return result of arithmetical operation
-     * @throws CalculatorException incorrect value in function
+     * @param line    input formula
+     * @param pos     position of character symbol
+     * @param lexemes list of lexeme
+     * @return position to next character symbol
+     * @throws CalculatorException calculator error
      */
-    static double function(double value, String f)
+    private static int parseArgument(String line, int pos,
+                                     LinkedList<Lexeme> lexemes)
             throws CalculatorException {
-        switch (f) {
-            case "sin" -> {
-                if (value % Math.PI == 0.0) return 0.0;
-                else return Math.sin(value);
-            }
-            case "cos" -> {
-                if ((value % (Math.PI / 2.0) == 0.0)
-                        & (value % Math.PI != 0.0)) return 0.0;
-                else return Math.cos(value);
-            }
-            case "atan" -> {
-                return Math.atan(value);
-            }
-            case "tan" -> {
-                if (value % (Math.PI / 2.0) == 0.0)
-                    throw new CalculatorException(Double.toString(value), 3);
-                else return Math.tan(value);
-            }
-            case "log10" -> {
-                if (value < 0.0)
-                    throw new CalculatorException(Double.toString(value), 1);
-                else return Math.log10(value);
-            }
-            case "log2" -> {
-                if (value < 0.0)
-                    throw new CalculatorException(Double.toString(value), 1);
-                else return Math.log(value) / Math.log(2);
-            }
-            case "sqrt" -> {
-                if (value < 0.0)
-                    throw new CalculatorException(Double.toString(value), 2);
-                else return Math.sqrt(value);
-            }
+        char c = line.charAt(pos);
+        if (Character.isDigit(c)) {
+            pos = getArgument(line, pos, true, lexemes);
+        } else {
+            if (Character.isLetter(c)) {
+                pos = getArgument(line, pos, false, lexemes);
+            } else throw new CalculatorException(String.valueOf(c), 9);
         }
-        return 0.0;
+        return pos;
+    }
+
+    /**
+     * This method get argument, it's can be one symbol or many.
+     * In number I add all digit, '.' and ',' symbols. In parameter I add
+     * all letter and digit, then I check this parameter may be it's
+     * mathematics function in method createTextLexeme()
+     *
+     * @param line    input formula
+     * @param pos     position of character symbol
+     * @param rule    true - digit; false - letter
+     * @param lexemes list of lexeme
+     * @return position to next character symbol
+     */
+    private static int getArgument(String line, int pos, boolean rule,
+                                   LinkedList<Lexeme> lexemes) {
+        StringBuilder sb = new StringBuilder();
+        char c = line.charAt(pos);
+        do {
+            sb.append(c);
+            pos++;
+            if (pos >= line.length()) break;
+            c = line.charAt(pos);
+        } while (rule
+                ? Character.isDigit(c) | c == '.' | c == ','
+                : Character.isLetter(c) | Character.isDigit(c));
+        pos--;
+        if (rule) lexemes.add(new Lexeme(NUMBER, sb.toString()));
+        else createTextLexeme(lexemes, sb);
+        return pos;
+    }
+
+    /**
+     * This method check mathematics function in parameter and add
+     * lexeme if find them, else add parameter
+     *
+     * @param lexemes list of lexeme
+     * @param sb      analyzed string parameter
+     */
+    private static void createTextLexeme(LinkedList<Lexeme> lexemes,
+                                         StringBuilder sb) {
+        String text = sb.toString();
+        switch (text) {
+            case "sin" -> lexemes.add(new Lexeme(SIN, text));
+            case "cos" -> lexemes.add(new Lexeme(COS, text));
+            case "log2" -> lexemes.add(new Lexeme(LOG2, text));
+            case "log10" -> lexemes.add(new Lexeme(LOG10, text));
+            case "sqrt" -> lexemes.add(new Lexeme(SQRT, text));
+            case "atan" -> lexemes.add(new Lexeme(ATAN, text));
+            case "tan" -> lexemes.add(new Lexeme(TAN, text));
+            default -> lexemes.add(new Lexeme(PARAMETER, text));
+        }
     }
 }

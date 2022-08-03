@@ -1,7 +1,5 @@
 package com.shpp.p2p.cs.olemeshev.assignment10;
 
-import com.shpp.p2p.cs.olemeshev.assignment11.Assignment11Part1;
-
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;

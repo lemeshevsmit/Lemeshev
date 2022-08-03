@@ -58,7 +58,7 @@ public class Test {
 
     static void start() {
         String[] test = new String[]{"1 + a * 2", "t =tr"};
-            Parser.main(test);
+            Assignment11Part1.main(test);
 
     }
 
@@ -80,7 +80,7 @@ public class Test {
         // меняю консоль на новую для вывода в файл.
         System.setOut(console);
         for (String[] test : tests) {
-                Parser.main(test);
+                Assignment11Part1.main(test);
         }
         System.setOut(out);
 
