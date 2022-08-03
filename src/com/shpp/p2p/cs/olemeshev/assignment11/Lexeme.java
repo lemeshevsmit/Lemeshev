@@ -1,6 +1,6 @@
-package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
+package com.shpp.p2p.cs.olemeshev.assignment11;
 
-import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
+import static com.shpp.p2p.cs.olemeshev.assignment11.Lexeme.LexemeType.*;
 
 /**
  * This class have algorithm of recursive parse of

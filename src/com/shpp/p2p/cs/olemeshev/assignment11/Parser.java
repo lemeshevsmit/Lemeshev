@@ -1,10 +1,10 @@
-package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
+package com.shpp.p2p.cs.olemeshev.assignment11;
 
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-import static com.shpp.p2p.cs.olemeshev.assignment11.recursive.Lexeme.LexemeType.*;
+import static com.shpp.p2p.cs.olemeshev.assignment11.Lexeme.LexemeType.*;
 
 
 /**

@@ -1,4 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.assignment11.recursive;
+package com.shpp.p2p.cs.olemeshev.assignment11;
 
 /**
  * class for my exception in calculator
