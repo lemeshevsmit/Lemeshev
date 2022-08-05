@@ -212,7 +212,8 @@ public class Lexeme {
             if (lexeme.type == END) {
                 formula.backPosition();
                 return value;
-            } else throw new CalculatorException(lexeme.type + " " + formula.nextElement().type, 11);
+            } else throw new CalculatorException(lexeme.type
+                    + " " + formula.nextElement().type, 11);
         }
 
         return value;

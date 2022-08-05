@@ -49,17 +49,16 @@ public class Test {
                 "243.0"
         };
 
-        testing(correctTests, correctAnswers);
-        testing(incorrectTests, incorrectAnswers);
+        //testing(correctTests, correctAnswers);
+        //testing(incorrectTests, incorrectAnswers);
 
 
-        //start();
+        start();
     }
 
     static void start() {
-        String[] test = new String[]{"1 + a * 2", "t =tr"};
-            Assignment11Part1.main(test);
-
+        String[] test = new String[]{"1+(2+3*(4+5-sin(45*cos((1+3)-1))))/7"};
+        com.shpp.p2p.cs.sbeseda.assignment11.Assignment11Part1.main(test);
     }
 
     /**
@@ -80,7 +79,7 @@ public class Test {
         // меняю консоль на новую для вывода в файл.
         System.setOut(console);
         for (String[] test : tests) {
-                Assignment11Part1.main(test);
+            Assignment11Part1.main(test);
         }
         System.setOut(out);
 

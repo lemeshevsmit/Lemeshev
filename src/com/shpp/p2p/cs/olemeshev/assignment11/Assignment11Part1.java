@@ -46,15 +46,15 @@ public class Assignment11Part1 {
      * @param params  input parameters
      * @return new formula in class Formula view
      */
-    private static Formula analyzeFormula(LinkedList<Lexeme> lexemes,
+    public static Formula analyzeFormula(LinkedList<Lexeme> lexemes,
                                           HashMap<String, LinkedList<Lexeme>> params) {
         LinkedList<Lexeme> formula = new LinkedList<>(lexemes);
         LinkedList<Lexeme> subFormula = new LinkedList<>();
         for (int i = 0; i < formula.size(); i++) {
-            Lexeme l = formula.get(i);
-            if (l.type == PARAMETER) {
+            Lexeme lexeme = formula.get(i);
+            if (lexeme.type == PARAMETER) {
                 for (String kay : params.keySet()) {
-                    if (l.value.equals(kay)) {
+                    if (lexeme.value.equals(kay)) {
                         formula.remove(i);
                         subFormula.add(new Lexeme(LEFT_BRACKET, "("));
                         subFormula.addAll(params.get(kay));
@@ -77,7 +77,7 @@ public class Assignment11Part1 {
      * @return HashMap with lists of lexeme
      * @throws CalculatorException calculator error
      */
-    private static HashMap<String, LinkedList<Lexeme>> getParameters(String[] args)
+    public static HashMap<String, LinkedList<Lexeme>> getParameters(String[] args)
             throws CalculatorException {
         HashMap<String, LinkedList<Lexeme>> parameters = new HashMap<>();
         if (args.length > 1) {
@@ -110,15 +110,15 @@ public class Assignment11Part1 {
             throws CalculatorException {
         LinkedList<Lexeme> lexemes = new LinkedList<>();
         for (int pos = 0; pos < line.length(); pos++) {
-            char c = line.charAt(pos);
-            switch (c) {
-                case '(' -> lexemes.add(new Lexeme(LEFT_BRACKET, c));
-                case ')' -> lexemes.add(new Lexeme(RIGHT_BRACKET, c));
-                case '+' -> lexemes.add(new Lexeme(PLUS, c));
-                case '-' -> lexemes.add(new Lexeme(MINUS, c));
-                case '*' -> lexemes.add(new Lexeme(MULTIPLY, c));
-                case '/' -> lexemes.add(new Lexeme(DIVIDE, c));
-                case '^' -> lexemes.add(new Lexeme(POW, c));
+            char symbol = line.charAt(pos);
+            switch (symbol) {
+                case '(' -> lexemes.add(new Lexeme(LEFT_BRACKET, symbol));
+                case ')' -> lexemes.add(new Lexeme(RIGHT_BRACKET, symbol));
+                case '+' -> lexemes.add(new Lexeme(PLUS, symbol));
+                case '-' -> lexemes.add(new Lexeme(MINUS, symbol));
+                case '*' -> lexemes.add(new Lexeme(MULTIPLY, symbol));
+                case '/' -> lexemes.add(new Lexeme(DIVIDE, symbol));
+                case '^' -> lexemes.add(new Lexeme(POW, symbol));
                 default -> pos = parseArgument(line, pos, lexemes);
             }
         }
@@ -140,13 +140,13 @@ public class Assignment11Part1 {
     private static int parseArgument(String line, int pos,
                                      LinkedList<Lexeme> lexemes)
             throws CalculatorException {
-        char c = line.charAt(pos);
-        if (Character.isDigit(c)) {
+        char symbol = line.charAt(pos);
+        if (Character.isDigit(symbol)) {
             pos = getArgument(line, pos, true, lexemes);
         } else {
-            if (Character.isLetter(c)) {
+            if (Character.isLetter(symbol)) {
                 pos = getArgument(line, pos, false, lexemes);
-            } else throw new CalculatorException(String.valueOf(c), 9);
+            } else throw new CalculatorException(String.valueOf(symbol), 9);
         }
         return pos;
     }
@@ -166,15 +166,15 @@ public class Assignment11Part1 {
     private static int getArgument(String line, int pos, boolean rule,
                                    LinkedList<Lexeme> lexemes) {
         StringBuilder sb = new StringBuilder();
-        char c = line.charAt(pos);
+        char symbol = line.charAt(pos);
         do {
-            sb.append(c);
+            sb.append(symbol);
             pos++;
             if (pos >= line.length()) break;
-            c = line.charAt(pos);
+            symbol = line.charAt(pos);
         } while (rule
-                ? Character.isDigit(c) | c == '.' | c == ','
-                : Character.isLetter(c) | Character.isDigit(c));
+                ? Character.isDigit(symbol) | symbol == '.' | symbol == ','
+                : Character.isLetter(symbol) | Character.isDigit(symbol));
         pos--;
         if (rule) lexemes.add(new Lexeme(NUMBER, sb.toString()));
         else createTextLexeme(lexemes, sb);
