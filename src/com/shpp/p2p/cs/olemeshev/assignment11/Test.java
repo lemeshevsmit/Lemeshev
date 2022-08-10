@@ -6,6 +6,7 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 
 
 public class Test {
@@ -57,8 +58,17 @@ public class Test {
     }
 
     static void start() {
-        String[] test = new String[]{"1+(2+3*(4+5-sin(45*cos((1+3)-1))))/7"};
-        com.shpp.p2p.cs.sbeseda.assignment11.Assignment11Part1.main(test);
+        String[] test = new String[]{"-1+(-3)*(-5)+a","a=2"};
+        com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.main(test);
+
+        test = new String[]{"a=2000000"};
+        //com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.main(test);
+
+        ArrayList<String> fo = com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.parsedExpression;
+        HashMap<String, Double> pa = new HashMap<>();
+        pa.put("a",20000000.0);
+        com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.replaceVariables(fo);
+
     }
 
     /**
