@@ -1,4 +1,6 @@
-package com.shpp.p2p.cs.olemeshev.assignment11;
+package com.shpp.p2p.cs.olemeshev.assignment11.test;
+
+import com.shpp.p2p.cs.olemeshev.assignment11.Assignment11Part1;
 
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;
@@ -6,7 +8,6 @@ import java.io.FileOutputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 
 
 public class Test {
@@ -26,12 +27,15 @@ public class Test {
                 {"sqrt(-5)"},
                 {"log2(-50)"},
                 {"log10(-30)"},
+
                 {"tan(pi/2)", "pi=" + Math.PI},
                 {"3/cos(pi/2)", "pi=3.141592653589793"},
                 {"3/sin(0)", "pi=3.141592653589793"},
+
                 {"3/sin(0", "pi=3.141592653589793"},
                 {"3/sin(3)*pi+3)", "pi=3.141592653589793"},
                 {"3/asin(3)*(pi+3)", "pi=3.141592653589793"},
+
                 {"3/sin(3)**(pi+3)", "pi=3.141592653589793"},
                 {"3^(aleksandr lemeshev)", "aleksandr lemeshev=5"},
 
@@ -40,35 +44,29 @@ public class Test {
                 "In function [SQRT] incorrect number=-5.0. Please, check input arguments.",
                 "In function [LOG2] incorrect number=-50.0. Please, check input arguments.",
                 "In function [LOG10] incorrect number=-30.0. Please, check input arguments.",
+
                 "Function [tan] doesn't exist in number=PI/2 in peroid PI. Please, check input value.",
                 "Divide by zero in formula.",
                 "Divide by zero in formula.",
-                "Cannot find: ). Please, check input value.",
-                "Incorrect value: For input string: \"3)\"",
-                "Incorrect value: For input string: \"a0.1411200080598672\"",
+
+                "Divide by zero in formula.",
+                "69.78555429766638",
+                "Incorrect lexeme sequence: PARAMETER LEFT_BRACKET",
+
                 "Incorrect value: For input string: \"*\"",
                 "243.0"
         };
 
-        //testing(correctTests, correctAnswers);
-        //testing(incorrectTests, incorrectAnswers);
+        testing(correctTests, correctAnswers);
+        testing(incorrectTests, incorrectAnswers);
 
 
-        start();
+        //start();
     }
 
     static void start() {
         String[] test = new String[]{"-1+(-3)*(-5)+a","a=2"};
-        com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.main(test);
-
-        test = new String[]{"a=2000000"};
-        //com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.main(test);
-
-        ArrayList<String> fo = com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.parsedExpression;
-        HashMap<String, Double> pa = new HashMap<>();
-        pa.put("a",20000000.0);
-        com.shpp.p2p.cs.vmaliugin.assignment11.Assignment11Part1.replaceVariables(fo);
-
+       Assignment11Part1.main(test);
     }
 
     /**
@@ -98,10 +96,12 @@ public class Test {
         for (int i = 0; i < result.size(); i++) {
             String value = result.get(i);
             if (value.equals(answers[i])) {
-                System.out.println("Test: " + Arrays.toString(tests[i]) + " PASSED!");
+                System.out.println("Test: " + Arrays.toString(tests[i])
+                        + " \u001B[32mPASSED!\u001B[0m");
                 System.out.println("Result: " + value);
             } else {
-                System.out.println("Test: " + Arrays.toString(tests[i]) + " CRUSH!");
+                System.out.println("Test: " + Arrays.toString(tests[i])
+                        + " \u001B[31mCRUSH!\u001B[0m");
                 System.out.println("You output: " + value);
                 System.out.println("Expected: " + answers[i]);
             }

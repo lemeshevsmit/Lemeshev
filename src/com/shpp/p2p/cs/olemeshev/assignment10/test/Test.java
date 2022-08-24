@@ -1,4 +1,6 @@
-package com.shpp.p2p.cs.olemeshev.assignment10;
+package com.shpp.p2p.cs.olemeshev.assignment10.test;
+
+import com.shpp.p2p.cs.olemeshev.assignment10.Assignment10Part1;
 
 import java.io.BufferedOutputStream;
 import java.io.FileNotFoundException;

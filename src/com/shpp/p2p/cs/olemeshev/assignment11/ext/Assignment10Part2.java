@@ -1,4 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.assignment11;
+package com.shpp.p2p.cs.olemeshev.assignment11.ext;
 
 
 import com.shpp.cs.a.simple.SimpleProgram;

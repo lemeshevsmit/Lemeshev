@@ -1,4 +1,6 @@
-package com.shpp.p2p.cs.olemeshev.assignment11;
+package com.shpp.p2p.cs.olemeshev.assignment11.ext;
+
+import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
 
 import java.util.*;
 

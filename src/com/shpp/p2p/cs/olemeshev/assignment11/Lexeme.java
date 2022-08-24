@@ -97,8 +97,9 @@ public class Lexeme {
                     formula.backPosition();
                     return value;
                 }
-                default -> throw new CalculatorException(lexeme.type +
-                        " " + formula.nextElement().type, 11);
+                default -> throw new CalculatorException(lexeme.type + "["
+                        + lexeme.value + "] " + formula.nextElement().type
+                        + "[" + formula.listLexemes.get(formula.position).value + "]", 11);
             }
         }
     }
@@ -129,8 +130,9 @@ public class Lexeme {
                     formula.backPosition();
                     return value;
                 }
-                default -> throw new CalculatorException(lexeme.type +
-                        " " + formula.nextElement().type, 11);
+                default -> throw new CalculatorException(lexeme.type + "["
+                        + lexeme.value + "] " + formula.nextElement().type
+                        + "[" + formula.listLexemes.get(formula.position).value + "]", 11);
             }
         }
     }
@@ -154,8 +156,9 @@ public class Lexeme {
                     formula.backPosition();
                     return value;
                 }
-                default -> throw new CalculatorException(lexeme.type +
-                        " " + formula.nextElement().type, 11);
+                default -> throw new CalculatorException(lexeme.type + "["
+                        + lexeme.value + "] " + formula.nextElement().type
+                        + "[" + formula.listLexemes.get(formula.position).value + "]", 11);
             }
         }
     }
@@ -190,8 +193,9 @@ public class Lexeme {
                 return checkSubFormula(formula);
             }
             default:
-                throw new CalculatorException(lexeme.type +
-                        " " + formula.nextElement().type, 11);
+                throw new CalculatorException(lexeme.type + "["
+                        + lexeme.value + "] " + formula.nextElement().type
+                        + "[" + formula.listLexemes.get(formula.position-1).value + "]", 11);
         }
     }
 
@@ -212,10 +216,10 @@ public class Lexeme {
             if (lexeme.type == END) {
                 formula.backPosition();
                 return value;
-            } else throw new CalculatorException(lexeme.type
-                    + " " + formula.nextElement().type, 11);
+            } else throw new CalculatorException(lexeme.type + "["
+                    + lexeme.value + "] " + formula.nextElement().type
+                    + "[" + formula.listLexemes.get(formula.position).value + "]", 11);
         }
-
         return value;
     }
 

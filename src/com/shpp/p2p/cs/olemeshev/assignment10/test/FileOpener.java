@@ -1,4 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.assignment10;
+package com.shpp.p2p.cs.olemeshev.assignment10.test;
 
 import java.io.BufferedReader;
 import java.io.File;
