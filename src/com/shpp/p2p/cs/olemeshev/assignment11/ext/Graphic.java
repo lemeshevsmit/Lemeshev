@@ -1,14 +1,19 @@
 package com.shpp.p2p.cs.olemeshev.assignment11.ext;
 
 import acm.graphics.*;
-import com.shpp.p2p.cs.olemeshev.assignment10.Assignment10Part1;
-import com.shpp.p2p.cs.olemeshev.assignment10.test.FileOpener;
+import com.shpp.p2p.cs.olemeshev.assignment11.Assignment11Part1;
+import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
+import com.shpp.p2p.cs.olemeshev.assignment11.Formula;
+import com.shpp.p2p.cs.olemeshev.assignment11.Lexeme;
+import com.shpp.p2p.cs.olemeshev.assignment11.test.FileOpener;
 
 import java.awt.*;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
 
 
 public class Graphic extends GCanvas implements ComponentListener {
@@ -76,8 +81,8 @@ public class Graphic extends GCanvas implements ComponentListener {
         }
     }
 
-    public void drawGraphics(String text) {
-        GPolygon polygon = new GPolygon();
+    public void drawGraphics(String text) throws CalculatorException {
+        Assignment11Part1.main(new String[]{text, "x=0"});
         // создаю поток для записи в файл
         FileOutputStream file = null;
         try {
@@ -92,17 +97,29 @@ public class Graphic extends GCanvas implements ComponentListener {
         // меняю консоль на новую для вывода в файл.
         System.setOut(console);
         for (int i = -getWidth(); i < getWidth(); i++) {
-            Assignment10Part1.main(new String[]{text, "x=" + i});
+            HashMap<String, LinkedList<Lexeme>> parameters =
+                    Assignment11Part1.getParameters(new String[]{text, "x=" + (i)});
+            Formula formula = Assignment11Part1.analyzeFormula(
+                    Assignment11Part1.formula.listLexemes,
+                    parameters);
+            System.out.println(Lexeme.calculate(formula));
         }
+
         FileOpener fileOpener = new FileOpener();
         ArrayList<String> result = fileOpener.openFile("result.txt");
-        for (int i = 0; i < result.size(); i++) {
+        for (int i = 0; i < result.size()-1; i++) {
+//            polygon.addVertex((-getWidth() + i + centerX),
+//                    (-1 * Double.parseDouble(result.get(i)) + centerY));
+            GLine line = new GLine((-getWidth() + i+centerX),
+                    (-1*Double.parseDouble(result.get(i))+centerY),
+                    (-getWidth() + i + 1+centerX),
+                    (-1*Double.parseDouble(result.get(i + 1))+centerY));
+            line.setColor(Color.RED);
+            add(line);
 
-            polygon.addVertex((-getWidth() + i + centerX),
-                    (-1 * Double.parseDouble(result.get(i)) + centerY));
         }
-        polygon.setColor(Color.RED);
-        add(polygon);
+//        polygon.setColor(Color.RED);
+//        add(polygon);
     }
 
     /**

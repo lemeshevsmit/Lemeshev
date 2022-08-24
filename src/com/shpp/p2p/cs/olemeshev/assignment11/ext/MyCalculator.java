@@ -10,7 +10,7 @@ import java.util.*;
  * @author Alexandr Lemeshev
  * @since 25.07.2022
  */
-public class Assignment11Part2 {
+public class MyCalculator {
     //array with mathematics operators
     private static final String[] OPERATORS = new String[]
             {"^", "/", "*", "-", "+"};

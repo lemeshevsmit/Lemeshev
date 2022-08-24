@@ -2,13 +2,14 @@ package com.shpp.p2p.cs.olemeshev.assignment11.ext;
 
 
 import com.shpp.cs.a.simple.SimpleProgram;
+import com.shpp.p2p.cs.olemeshev.assignment11.CalculatorException;
 
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.event.ActionEvent;
 
-public class Assignment10Part2 extends SimpleProgram {
+public class Assignment11Part1ext extends SimpleProgram {
 
     public static final int APPLICATION_WIDTH = 1000;
     public static final int APPLICATION_HEIGHT = 600;
@@ -36,7 +37,9 @@ public class Assignment10Part2 extends SimpleProgram {
             public void stateChanged(ChangeEvent e) {
                 graph.scale = scale.getValue();
                 graph.update();
-                graph.drawGraphics(inputText.getText());
+                try {
+                    graph.drawGraphics(inputText.getText());
+                } catch (CalculatorException ignored) {}
             }
         });
         inputText.setActionCommand("EnterPressed");
@@ -49,7 +52,10 @@ public class Assignment10Part2 extends SimpleProgram {
             graph.update();
             if (inputText.getText().equals("")) getDialog().showErrorMessage("No input graphic.");
             else {
-                graph.drawGraphics(inputText.getText());
+                try {
+                    graph.drawGraphics(inputText.getText());
+                } catch (CalculatorException ignored) {
+                }
             }
         }
     }
