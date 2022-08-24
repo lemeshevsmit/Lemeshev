@@ -5,7 +5,6 @@ import acm.graphics.GImage;
 import java.awt.*;
 import java.util.Queue;
 import java.util.*;
-import java.util.stream.IntStream;
 
 /**
  * This class find count of silhouettes on input image with BFS algorithm
@@ -14,6 +13,8 @@ import java.util.stream.IntStream;
  * @since 11.08.2022
  */
 public class Assignment13Part1 {
+    //matrix[3x3] index in algorithm
+    private static final int left = -1, right = 1, top = -1, down = 1;
     //background color
     private static Color background;
     // sensitivity of colors object and background [1..254]
@@ -69,13 +70,11 @@ public class Assignment13Part1 {
         boolean pngKay = fileType.equals("png");
         totalPixels = pixels.length * pixels[0].length;
         findBackgroundColor(pixels, pngKay);
+        binarizationImage(pixels, background);
         if (EROSION_COUNT != 0) {
-            binarizationImage(pixels, background);
             for (int i = 0; i < EROSION_COUNT; i++) {
                 erosionImage(pixels);
             }
-        } else {
-            binarizationImage(pixels, background);
         }
     }
 
@@ -89,7 +88,6 @@ public class Assignment13Part1 {
      */
     private static void erosionImage(int[][] pixels) {
         int[][] result = new int[pixels.length][pixels[0].length];
-        int left = -1, right = 1, top = -1, down = 1;
         for (int i = 0; i < pixels.length; i++)
             for (int j = 0; j < pixels[0].length; j++) {
                 if (pixels[i][j] == ONE) {
@@ -107,8 +105,9 @@ public class Assignment13Part1 {
                 } else result[i][j] = ZERO;
             }
         //modification pixels array
-        IntStream.range(0, pixels.length)
-                .forEach(i -> System.arraycopy(result[i], 0, pixels[i], 0, result[0].length));
+        for (int i = 0; i < pixels.length; i++) {
+            System.arraycopy(result[i], 0, pixels[i], 0, result[0].length);
+        }
     }
 
 
@@ -121,26 +120,36 @@ public class Assignment13Part1 {
      * @param pngKay input kay to png format of image
      */
     private static void findBackgroundColor(int[][] pixels, boolean pngKay) {
-        HashMap<Integer, Integer> map = new HashMap<>();
+        HashMap<Integer, Integer> allPixels = new HashMap<>();
+        HashMap<Integer, Integer> framePixels = new HashMap<>();
         //find all colors in picture and calculate count of him
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels[0].length; j++) {
                 int color = pixels[i][j];
-                map.put(color, map.containsKey(color) ? map.get(color) + 1 : 1);
+                if (i == 0 || i == pixels.length - 1 || j == 0 || j == pixels[0].length - 1) {
+                    framePixels.put(color, framePixels.containsKey(color) ? framePixels.get(color) + 1 : 1);
+                } else {
+                    allPixels.put(color, allPixels.containsKey(color) ? allPixels.get(color) + 1 : 1);
+                }
             }
         }
-        int max = 0; //find color with max count
-        for (Map.Entry<Integer, Integer> entry : map.entrySet()) {
+        int max = 0; //find color with max count in not frame
+        for (Map.Entry<Integer, Integer> entry : allPixels.entrySet()) {
             if (entry.getValue() > max) {
                 max = entry.getValue();
                 background = new Color(entry.getKey(), pngKay);
             }
         }
-        //swap colors if first pixel is different
-        Color firstColor = new Color(pixels[0][0], pngKay);
-        if (!firstColor.equals(background)) {
-            background = firstColor;
+        max = 0; //find color with max count in frame
+        Color frameColor = background;
+        for (Map.Entry<Integer, Integer> entry : framePixels.entrySet()) {
+            if (entry.getValue() > max) {
+                max = entry.getValue();
+                frameColor = new Color(entry.getKey(), pngKay);
+            }
         }
+        //swap colors if frame color is different
+        if (!frameColor.equals(background)) background = frameColor;
     }
 
 
@@ -180,7 +189,6 @@ public class Assignment13Part1 {
      * @return count of pixel in silhouettes
      */
     private static double BFS8(int[][] pixels, boolean[][] way, int row, int col) {
-        int left = -1, right = 1, top = -1, down = 1;
         Queue<Pixel> indexList = new ArrayDeque<>();
         int silhouettesPixels = 0;
         way[row][col] = true;

@@ -35,7 +35,7 @@ public class Assignment12Part1 {
     public static void main(String[] args) {
         try {
             if (args == null || Arrays.equals(args, new String[]{})) {
-                args = new String[]{"test2.jpg"};
+                args = new String[]{"test.jpg"};
             }
             GImage image = new GImage(args[0]);
             int[][] pixels = image.getPixelArray();
