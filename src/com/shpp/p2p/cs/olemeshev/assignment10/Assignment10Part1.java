@@ -189,7 +189,7 @@ public class Assignment10Part1 {
             for (int i = 1; i < parameters.length; i++) {
                 String[] value = parameters[i].split("=");
                 try {
-                    if (value.length>2) throw  new ArrayIndexOutOfBoundsException();
+                    if (value.length > 2) throw new ArrayIndexOutOfBoundsException();
                     if (!list.containsKey(value[0].trim())) {
                         list.put(value[0].trim(), parseFormula(value[1]));
                     }

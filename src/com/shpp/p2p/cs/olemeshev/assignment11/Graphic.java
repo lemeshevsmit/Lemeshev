@@ -1,6 +1,8 @@
-package com.shpp.p2p.cs.olemeshev.assignment10;
+package com.shpp.p2p.cs.olemeshev.assignment11;
 
 import acm.graphics.*;
+import com.shpp.p2p.cs.olemeshev.assignment10.Assignment10Part1;
+import com.shpp.p2p.cs.olemeshev.assignment10.FileOpener;
 
 import java.awt.*;
 import java.awt.event.ComponentEvent;
@@ -92,7 +94,7 @@ public class Graphic extends GCanvas implements ComponentListener {
         for (int i = -getWidth(); i < getWidth(); i++) {
             Assignment10Part1.main(new String[]{text, "x=" + i});
         }
-        FileOpener fileOpener = new FileOpener();
+        com.shpp.p2p.cs.olemeshev.assignment10.FileOpener fileOpener = new FileOpener();
         ArrayList<String> result = fileOpener.openFile("result.txt");
         for (int i = 0; i < result.size(); i++) {
 

@@ -27,12 +27,26 @@ public class Test {
                 {"a^b+a*2-4*c", "a=2", "b=3", "c=1"},
                 {"a^b/a*2-4*c*a", "a=2", "b=3", "x=0", "c=1"},
                 {"1+a*2", "a=-2.0D"},
-                {"1+a*2 a=2*3^2"}
+                {"1+a*2", "a=2*3^2"}
         };
         String[] correctAnswers = new String[]{
-                "5.0", String.valueOf(7 + 1.0 / 3), "9.0", "-7.0", "15.0",
-                "-15.0", "-1.0", "13.0", "10.0", "2.5",
-                String.valueOf(Math.pow(3, -1)), "8.0", "0.0", "-3.0", "37.0"
+                "5.0",
+                String.valueOf(7 + 1.0 / 3),
+                "9.0",
+                "-7.0",
+                "15.0",
+
+                "-15.0",
+                "-1.0",
+                "13.0",
+                "10.0",
+                "2.5",
+
+                String.valueOf(Math.pow(3, -1)),
+                "8.0",
+                "0.0",
+                "-3.0",
+                "37.0"
         };
 
         String[][] incorrectTests = new String[][]{
@@ -50,7 +64,7 @@ public class Test {
 
                 {"1 + a*", "t =tr"},
                 {"1 + a*-5", "a =tr"},
-                {"1 + 2.0*-5", "45"}
+                {"1 + 2.0*-5", "45=54"}
         };
         String[] incorrectAnswers = new String[]{
                 "Formula is null or empty: []",
@@ -67,14 +81,13 @@ public class Test {
 
                 "Unknown value in formula: For input string: \"a\"",
                 "Unknown value in formula: For input string: \"tr\"",
-                ""
+                "-9.0"
         };
 
         testing(correctTests, correctAnswers);
         testing(incorrectTests, incorrectAnswers);
 
-
-        start();
+        //start();
     }
 
     static void start() {
@@ -109,10 +122,12 @@ public class Test {
         for (int i = 0; i < result.size(); i++) {
             String value = result.get(i);
             if (value.equals(answers[i])) {
-                System.out.println("Test: " + Arrays.toString(tests[i]) + " PASSED!");
+                System.out.println("Test: " + Arrays.toString(tests[i])
+                        + " \u001B[32mPASSED!\u001B[0m");
                 System.out.println("Result: " + value);
             } else {
-                System.out.println("Test: " + Arrays.toString(tests[i]) + " CRUSH!");
+                System.out.println("Test: " + Arrays.toString(tests[i])
+                        + " \u001B[31mCRUSH!\u001B[0m");
                 System.out.println("You output: " + value);
                 System.out.println("Expected: " + answers[i]);
             }
