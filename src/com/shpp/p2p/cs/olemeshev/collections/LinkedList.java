@@ -2,15 +2,20 @@ package com.shpp.p2p.cs.olemeshev.collections;
 
 import java.util.NoSuchElementException;
 
+/**
+ * This class its basic realisation of LinkedList
+ *
+ * @param <T> type of elements in list
+ * @author Aleksandr Lemeshev
+ * @since 25.08.2022
+ */
 public class LinkedList<T> {
-
     //size of list (count of elements)
     private int sizeOfList = 0;
     //head element of list
     private Node<T> head = null;
     //last element of list
     private Node<T> tail = null;
-
 
     /**
      * This method returns the head element in LinkedList or throws exception
