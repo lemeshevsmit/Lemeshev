@@ -12,6 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class ArrayListTest {
     private ArrayList<String> stringList = new ArrayList<>();
     private ArrayList<Integer> intList = new ArrayList<>();
+    private ArrayList<Person> personList = new ArrayList<>();
     Field field = stringList.getClass().getDeclaredField("initCapacity");
     Object value;
 
@@ -25,7 +26,7 @@ class ArrayListTest {
     }
 
     @AfterAll
-    static void endTesting(){
+    static void endTesting() {
         System.out.println("Testing the end.");
     }
 
@@ -293,10 +294,31 @@ class ArrayListTest {
             void deleteLastInEmpty() {
                 intList.deleteAll();
                 Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> intList.removeLast());
-                assertEquals("Index out of range: -1" , exception.getMessage());
+                assertEquals("Index out of range: -1", exception.getMessage());
                 exception = assertThrows(IndexOutOfBoundsException.class, () -> intList.remove(0));
-                assertEquals("Index out of range: 0" , exception.getMessage());
+                assertEquals("Index out of range: 0", exception.getMessage());
             }
         }
+    }
+
+    @Tag("Percon")
+    @Nested
+    @DisplayName("Test <Person> ArrayList")
+    class PersonArrayList {
+        @BeforeEach
+        void setUp() {
+            personList.add(new Person("Anton", 22));
+            personList.add(new Person("Valera", 37));
+            personList.add(new Person("Vasya", 18));
+            personList.add(new Person("Petya", 19));
+        }
+
+        @AfterEach
+        void tearDown() {
+            personList = null;
+        }
+    }
+
+    record Person(String name, int age) {
     }
 }

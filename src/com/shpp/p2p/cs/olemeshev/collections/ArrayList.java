@@ -6,14 +6,14 @@ import java.util.Arrays;
  * This class is realisation of my ArrayList
  *
  * @param <E> type elements of list
+ * @author Aleksandr Lemeshev
+ * @since 29.08.2022
  */
 public class ArrayList<E> {
     //start size of collection
     private int initCapacity = 10;
-
     //collection elements
     private Object[] elements;
-
     private int countOfElement;
 
     /**
@@ -137,7 +137,8 @@ public class ArrayList<E> {
      */
     public E remove(int index) {
         E deletedElement = get(index);
-        System.arraycopy(elements, index + 1, elements, index, countOfElement - 1 - index);
+        System.arraycopy(elements, index + 1,
+                elements, index, countOfElement - 1 - index);
         elements[countOfElement - 1] = null;
         countOfElement--;
         return deletedElement;
