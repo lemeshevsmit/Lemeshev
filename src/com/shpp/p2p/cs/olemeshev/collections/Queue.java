@@ -3,7 +3,7 @@ package com.shpp.p2p.cs.olemeshev.collections;
 import java.util.NoSuchElementException;
 
 /**
- * This class its basic realisation of Queue
+ * This class its basic realisation of Queue (FIFO)
  *
  * @param <T> type of elements in list
  * @author Aleksandr Lemeshev
