@@ -1,4 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.collections;
+package com.shpp.p2p.cs.olemeshev.Collections;
 
 import java.util.Arrays;
 
@@ -7,14 +7,14 @@ import java.util.Arrays;
  *
  * @param <E> type elements of list
  * @author Aleksandr Lemeshev
- * @since 29.08.2022
+ * @since 11.08.2022
  */
 public class ArrayList<E> {
     //start size of collection
     private int initCapacity = 10;
     //collection elements
     private Object[] elements;
-    private int countOfElement;
+    private int countOfElement = 0;
 
     /**
      * Constructor without parameters create collection with default size==10
@@ -120,7 +120,7 @@ public class ArrayList<E> {
     }
 
     /**
-     * This method delete all empty elements from list
+     * This method delete all null elements from list
      */
     public void trimToSize() {
         if (countOfElement < elements.length) {
@@ -145,9 +145,9 @@ public class ArrayList<E> {
     }
 
     /**
-     * This method delete all elements from list, collection have value == null
+     * This method delete list, collection have value == null
      */
-    public void deleteAll() {
+    public void delete() {
         elements = null;
         countOfElement = 0;
         initCapacity = 10;

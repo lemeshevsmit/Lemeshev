@@ -36,7 +36,6 @@ public class Test {
                 {"3/sin(3)*pi+3)", "pi=3.141592653589793"},
                 {"3/asin(3)*(pi+3)", "pi=3.141592653589793"},
 
-                {"3/sin(3)**(pi+3)", "pi=3.141592653589793"},
                 {"3^(aleksandr lemeshev)", "aleksandr lemeshev=5"},
 
         };
@@ -51,9 +50,8 @@ public class Test {
 
                 "Divide by zero in formula.",
                 "69.78555429766638",
-                "Incorrect lexeme sequence: PARAMETER LEFT_BRACKET",
+                "Incorrect lexeme sequence: PARAMETER[asin] LEFT_BRACKET[(]",
 
-                "Incorrect value: For input string: \"*\"",
                 "243.0"
         };
 

@@ -1,4 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.collections;
+package com.shpp.p2p.cs.olemeshev.Collections;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.*;
@@ -9,12 +9,18 @@ import java.lang.reflect.Field;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Testing class to my realization of ArrayList I use JUnit5
+ *
+ * @author Aleksandr Lemeshev
+ * @since 30.08.2022
+ */
 class ArrayListTest {
     private ArrayList<String> stringList = new ArrayList<>();
     private ArrayList<Integer> intList = new ArrayList<>();
     private ArrayList<Person> personList = new ArrayList<>();
-    Field field = stringList.getClass().getDeclaredField("initCapacity");
-    Object value;
+    private final Field field = stringList.getClass().getDeclaredField("initCapacity");
+    private Object value;
 
     ArrayListTest() throws NoSuchFieldException {
         field.setAccessible(true);
@@ -30,9 +36,13 @@ class ArrayListTest {
         System.out.println("Testing the end.");
     }
 
+    /**
+     * Nested class ArrayList with type String. In this class I tested method isEmpty and
+     * field countOfElement and initCapacity
+     */
     @Tag("String")
     @Nested
-    @DisplayName("Test <String> ArrayList")
+    @DisplayName("Test <String> ArrayList:")
     class StringArrayList {
 
         @BeforeEach
@@ -52,34 +62,34 @@ class ArrayListTest {
         class SizeOfStringList {
 
             @Test
-            @DisplayName("default size")
+            @DisplayName("Default size")
             void defaultSize() {
                 assertEquals(3, stringList.size(), "size of list not expected");
             }
 
             @Test
-            @DisplayName("size after delete last element")
+            @DisplayName("Size after delete last element")
             void sizeAfterDeleteLastElement() {
                 stringList.removeLast();
                 assertEquals(2, stringList.size(), "size of list not expected");
             }
 
             @Test
-            @DisplayName("size after add new element")
+            @DisplayName("Size after add new element")
             void sizeAfterAdd() {
                 stringList.add("Ser Davos Seaworth");
                 assertEquals(4, stringList.size(), "size of list not expected");
             }
 
             @Test
-            @DisplayName("size after delete element with index")
+            @DisplayName("Size after delete element with index")
             void sizeAfterDeleteOneElement() {
                 stringList.remove(1);
                 assertEquals(2, stringList.size(), "size of list not expected");
             }
 
             @Test
-            @DisplayName("size after delete all elements in cycle")
+            @DisplayName("Size after delete all elements in cycle")
             void sizeAfterDeleteAllByOne() {
                 while (stringList.size() != 0) {
                     stringList.removeLast();
@@ -88,51 +98,51 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("size after delete all")
+            @DisplayName("Size after delete all")
             void sizeAfterDeleteAll() {
-                stringList.deleteAll();
+                stringList.delete();
                 assertEquals(0, stringList.size(), "size of list not expected");
             }
         }
 
         @Nested
-        @DisplayName("Testing isEmpty method")
+        @DisplayName("Testing isEmpty method:")
         class IsEmptyStringList {
 
             @Test
-            @DisplayName("default value list with 3 elements")
+            @DisplayName("Default value list with 3 elements")
             void defaultEmpty() {
                 assertFalse(stringList.isEmpty(), "list is empty");
             }
 
             @Test
-            @DisplayName("testing after add new element")
+            @DisplayName("Testing after add new element")
             void emptyAfterAddElement() {
                 stringList.add("Tormund Giantsbane");
                 assertFalse(stringList.isEmpty(), "list is empty");
             }
 
             @Test
-            @DisplayName("testing after delete all elements")
+            @DisplayName("Testing after delete all elements")
             void emptyAfterDelete() {
-                stringList.deleteAll();
+                stringList.delete();
                 assertTrue(stringList.isEmpty(), "list is not empty");
             }
         }
 
         @Nested
-        @DisplayName("Testing initial capacity")
+        @DisplayName("Testing initial capacity:")
         class InitCapacity {
 
             @Test
-            @DisplayName("default constructor with initial capacity ==10")
+            @DisplayName("Default constructor with initial capacity ==10")
             void defaultCapacity() throws IllegalAccessException {
                 value = field.get(stringList);
                 assertEquals(10, value, "unexpected initial capacity");
             }
 
             @Test
-            @DisplayName("capacity  after add new 10 elements")
+            @DisplayName("Capacity  after add new 10 elements")
             void capacityAfterAddElements() throws IllegalAccessException {
                 value = field.get(stringList);
                 for (int i = 0; i < 10; i++) {
@@ -143,7 +153,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("capacity after delete in cycle all elements")
+            @DisplayName("Capacity after delete in cycle all elements")
             void capacityAfterCycleDelete() throws IllegalAccessException {
                 while (stringList.size() != 0) {
                     stringList.removeLast();
@@ -153,7 +163,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("capacity after method trimToSize")
+            @DisplayName("Capacity after method trimToSize")
             void capacityAfterTrim() throws IllegalAccessException {
                 stringList.trimToSize();
                 value = field.get(stringList);
@@ -161,7 +171,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("incorrect input capacity")
+            @DisplayName("Incorrect input capacity")
             void incorrectCapacity() {
                 Exception exception = assertThrows(IllegalArgumentException.class, () ->
                         stringList = new ArrayList<>(-5));
@@ -169,7 +179,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("capacity after add one new element")
+            @DisplayName("Capacity after add one new element")
             void capacityAfterAddNewElement() throws IllegalAccessException {
                 stringList.add("Eddard Stark");
                 value = field.get(stringList);
@@ -177,7 +187,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("capacity after creating new list with constructor with parameters")
+            @DisplayName("Capacity after creating new list with constructor with parameters")
             void capacityInConstructor() throws IllegalAccessException {
                 stringList = new ArrayList<>(6);
                 value = field.get(stringList);
@@ -186,9 +196,13 @@ class ArrayListTest {
         }
     }
 
+    /**
+     * Nested class ArrayList with type Integer. In this class I tested next methods
+     * add, remove, removeLast, delete
+     */
     @Tag("Integer")
     @Nested
-    @DisplayName("Test <Integer> ArrayList")
+    @DisplayName("Test <Integer> ArrayList:")
     class IntegerArrayList {
 
         @BeforeEach
@@ -206,7 +220,7 @@ class ArrayListTest {
         }
 
         @Nested
-        @DisplayName("Test add new element to <Integer> ArrayList")
+        @DisplayName("Test add new element to <Integer> ArrayList:")
         class AddElement {
 
             @Test
@@ -240,7 +254,7 @@ class ArrayListTest {
             @Test
             @DisplayName("Add element after delete all")
             void addElementAfterDeleteAll() {
-                intList.deleteAll();
+                intList.delete();
                 assertTrue(intList.isEmpty(), "deleting all elements not correct");
                 intList.add(25);
                 assertEquals(1, intList.size(), "count elements not correct");
@@ -249,14 +263,14 @@ class ArrayListTest {
         }
 
         @Nested
-        @DisplayName("Test delete element")
+        @DisplayName("Test delete element:")
         class DeleteElement {
 
             @Test
             @DisplayName("Delete all elements")
             void deleteAll() {
                 assertEquals(5, intList.size(), "incorrect size");
-                intList.deleteAll();
+                intList.delete();
                 assertEquals(0, intList.size(), "incorrect size");
             }
 
@@ -292,7 +306,7 @@ class ArrayListTest {
             @Test
             @DisplayName("Delete last in empty list")
             void deleteLastInEmpty() {
-                intList.deleteAll();
+                intList.delete();
                 Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> intList.removeLast());
                 assertEquals("Index out of range: -1", exception.getMessage());
                 exception = assertThrows(IndexOutOfBoundsException.class, () -> intList.remove(0));
@@ -301,9 +315,12 @@ class ArrayListTest {
         }
     }
 
-    @Tag("Percon")
+    /**
+     * Nested class ArrayList with type Person. In this class I tested two methods get and set
+     */
+    @Tag("Person")
     @Nested
-    @DisplayName("Test <Person> ArrayList")
+    @DisplayName("Test <Person> ArrayList:")
     class PersonArrayList {
         @BeforeEach
         void setUp() {
@@ -317,8 +334,118 @@ class ArrayListTest {
         void tearDown() {
             personList = null;
         }
+
+        @Nested
+        @DisplayName("Test get method <Person> ArrayList:")
+        class Getter {
+
+            @Test
+            @DisplayName("Get element from default not empty collection")
+            void defaultGetter() {
+                assertEquals("Valera", personList.get(1).name, "unexpected name of person");
+                assertEquals(37, personList.get(1).age, "unexpected age of person");
+                assertEquals("Petya", personList.get(personList.size() - 1).name, "unexpected name of person");
+            }
+
+            @Test
+            @DisplayName("Get from incorrect index")
+            void incorrectGetter() {
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.get(-1));
+                assertEquals("Index out of range: -1", exception.getMessage());
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.get(55));
+                assertEquals("Index out of range: 55", exception.getMessage());
+                personList.remove(personList.size() - 1);
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.get(personList.size()));
+                assertEquals("Index out of range: " + personList.size(), exception.getMessage());
+            }
+
+            @Test
+            @DisplayName("Get element after remove or add element")
+            void getterAfterRemoveOrAdd() {
+                personList.removeLast();
+                assertEquals("Vasya", personList.get(personList.size() - 1).name, "unexpected name of person");
+                personList.add(new Person("Taras", 25));
+                assertEquals("Taras", personList.get(personList.size() - 1).name, "unexpected name of person");
+            }
+
+            @Test
+            @DisplayName("Get element from empty list")
+            void getterFromEmptyList() {
+                while (personList.size() != 0) {
+                    personList.removeLast();
+                }
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.get(0));
+                assertEquals("Index out of range: 0", exception.getMessage());
+                personList.delete();
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.get(0));
+                assertEquals("Index out of range: 0", exception.getMessage());
+                personList = new ArrayList<>(1);
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.get(0));
+                assertEquals("Index out of range: 0", exception.getMessage());
+            }
+        }
+
+        @Nested
+        @DisplayName("Test set method <Person> ArrayList:")
+        class Setter {
+
+            @Test
+            @DisplayName("Set element from default not empty collection")
+            void defaultSetter() {
+                Person person = new Person("Stepan", 55);
+                assertEquals("Valera", personList.get(1).name, "unexpected name of person");
+                personList.set(1, person);
+                assertEquals("Stepan", personList.get(1).name, "unexpected name of person");
+                assertEquals(55, personList.get(1).age, "unexpected age of person");
+            }
+
+            @Test
+            @DisplayName("Set from incorrect index")
+            void incorrectSetter() {
+                Person person = new Person("Stepan", 55);
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.set(-1, person));
+                assertEquals("Index out of range: -1", exception.getMessage());
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.set(55, person));
+                assertEquals("Index out of range: 55", exception.getMessage());
+            }
+
+            @Test
+            @DisplayName("Set added element")
+            void setterNewElement() {
+                Person person = new Person("Stepan", 55);
+                personList.add(person);
+                Person newPerson = new Person("Stepan", 45);
+                personList.set(personList.size() - 1, newPerson);
+                assertEquals(45, personList.get(personList.size() - 1).age, "unexpected age of person");
+            }
+
+            @Test
+            @DisplayName("Set element from empty list")
+            void setterFromEmptyList() {
+                while (personList.size() != 0) {
+                    personList.removeLast();
+                }
+                Person person = new Person("Stepan", 55);
+                Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.set(0, person));
+                assertEquals("Index out of range: 0", exception.getMessage());
+
+                personList.delete();
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.set(0, person));
+                assertEquals("Index out of range: 0", exception.getMessage());
+
+                personList = new ArrayList<>(1);
+                exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.set(0, person));
+                assertEquals("Index out of range: 0", exception.getMessage());
+            }
+        }
     }
 
+    /**
+     * Inner class for testing
+     *
+     * @param name name of Person
+     * @param age  age of Person
+     */
     record Person(String name, int age) {
     }
 }

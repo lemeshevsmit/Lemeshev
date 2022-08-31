@@ -1,4 +1,4 @@
-package com.shpp.p2p.cs.olemeshev.collections;
+package com.shpp.p2p.cs.olemeshev.Collections;
 
 import java.util.NoSuchElementException;
 
@@ -7,7 +7,7 @@ import java.util.NoSuchElementException;
  *
  * @param <T> type of elements in list
  * @author Aleksandr Lemeshev
- * @since 25.08.2022
+ * @since 12.08.2022
  */
 public class LinkedList<T> {
     //size of list (count of elements)
@@ -25,7 +25,7 @@ public class LinkedList<T> {
      */
     public T getHead() {
         Node<T> node = head;
-        if (node == null) throw new NoSuchElementException();
+        if (node == null) throw new NoSuchElementException("list is empty");
         return node.element;
     }
 
@@ -55,8 +55,9 @@ public class LinkedList<T> {
      * @throws NoSuchElementException if this list is empty
      */
     public T getTail() {
+        if (sizeOfList == 1) return head.element;
         Node<T> node = tail;
-        if (node == null) throw new NoSuchElementException();
+        if (node == null) throw new NoSuchElementException("list is empty");
         return node.element;
     }
 
@@ -122,7 +123,7 @@ public class LinkedList<T> {
      * @throws NoSuchElementException if this list is empty
      */
     public void remove() {
-        if (head == null) throw new NoSuchElementException();
+        if (head == null) throw new NoSuchElementException("list is empty");
         else {
             if (tail != null) {
                 Node<T> node = tail.prev;
@@ -145,7 +146,7 @@ public class LinkedList<T> {
      * @throws NoSuchElementException if this list is empty
      */
     public void removeFromHead() {
-        if (head == null) throw new NoSuchElementException();
+        if (head == null) throw new NoSuchElementException("list is empty");
         if (head.next != null) {
             Node<T> node = head.next;
             if (node.equals(tail)) {
@@ -168,6 +169,28 @@ public class LinkedList<T> {
         head = null;
         tail = null;
         sizeOfList = 0;
+    }
+
+    /**
+     * This method return all elements of collection to string
+     *
+     * @return String with elements of collection
+     */
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        if (sizeOfList > 0) {
+            sb.append("[\"");
+            Node<T> node = head;
+            for (int i = 0; i < sizeOfList; i++) {
+                sb.append(node.element).append("\", \"");
+                node = node.next;
+            }
+            if (sb.length() > 3) {
+                sb.setLength(sb.length() - 3);
+                sb.append("]");
+            }
+            return sb.toString();
+        } else return "[]";
     }
 
     /**
