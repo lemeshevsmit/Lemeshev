@@ -11,8 +11,8 @@ public class Program {
 
         // створимо список об'єктів, які будемо записувати
         ArrayList<Person> people = new ArrayList<Person>();
-        people.add(new Person("Tom", 30, 175, false));
-        people.add(new Person("Sam", 33, 178, true));
+        people.add(new Person("Tom", 30));
+        people.add(new Person("Sam", 33 ));
 
         try(ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(filename))) {
             oos.writeObject(people);
@@ -35,32 +35,3 @@ public class Program {
     }
 }
 
-class Person implements Serializable{
-    private String name;
-    private int age;
-    private transient double height;
-    private transient boolean married;
-
-    Person(String name, int age, double height, boolean married){
-        this.name = name;
-        this.age = age;
-        this.height = height;
-        this.married = married;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getAge() {
-        return age;
-    }
-
-    public double getHeight() {
-        return height;
-    }
-
-    public boolean isMarried() {
-        return married;
-    }
-}
