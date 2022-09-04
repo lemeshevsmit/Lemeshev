@@ -59,12 +59,7 @@ public class SetTest {
 
     @Test
     public void iteratorGeneratesCharactersForCustomType() {
-        final Set<Character> rangePoints = Set.of('a', 'd', new Function<Character, Character>() {
-            @Override
-            public Character apply(Character character) {
-                return (char) (character + 1);
-            }
-        });
+        final Set<Character> rangePoints = Set.of('a', 'd', character -> (char) (character + 1));
 
         final Iterator<Character> iterator = rangePoints.iterator();
         final List<Character> expectedCharacters = Arrays.asList('a', 'b', 'c', 'd');

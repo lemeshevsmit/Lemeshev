@@ -5,7 +5,6 @@ import org.junit.Test;
 
 import java.util.*;
 
-import static java.util.stream.Collectors.toList;
 import static org.junit.Assert.*;
 
 public class MyStreamTest {
@@ -38,9 +37,9 @@ public class MyStreamTest {
     @Test
     public void createUsersTest() throws Exception {
         final List<User> users = homework.createUsers(emails);
-        final Set<String> distinctEmails = new HashSet<>(emails);
+        final HashSet<String> distinctEmails = new HashSet<>(emails);
         distinctEmails.remove(null);
-        final List<String> userEmails = users.stream().map(User::getEmail).collect(toList());
+        final List<String> userEmails = users.stream().map(User::getEmail).toList();
         assertEquals(distinctEmails.size(), userEmails.size());
     }
 

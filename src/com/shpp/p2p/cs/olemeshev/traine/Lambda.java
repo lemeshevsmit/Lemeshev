@@ -1,11 +1,12 @@
 package com.shpp.p2p.cs.olemeshev.traine;
 
+import java.util.Objects;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.function.*;
 
 public class Lambda {
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws InterruptedException {
 
         Function<Integer, Integer> abs = integer -> Math.abs(integer);
         IntUnaryOperator absAltRef = Math::abs;
@@ -52,6 +53,29 @@ public class Lambda {
         IntUnaryOperator squreThenIncrement = squere.andThen(increment);
         System.out.println(incrementThenSquere.applyAsInt(3));
         System.out.println(squreThenIncrement.applyAsInt(3));
+
+
+
+        ////////////////////////////////////////
+        Predicate<String> predicate1 = Objects::nonNull;
+        Predicate<String> predicate2 = String::isEmpty;
+
+        System.out.println(predicate2.test(""));
+        System.out.println(predicate2.test("null"));
+
+        Consumer<Integer> consumer = System.out::println;
+
+        consumer.andThen(v-> System.out.println(v+5)).accept(44);
+        consumer.accept(45);
+        consumer.accept(46);
+
+        Supplier<String> supplier = ()->String.valueOf(System.currentTimeMillis());
+
+        System.out.println(supplier.get());
+        Thread.sleep(100);
+        System.out.println(supplier.get());
+        Thread.sleep(1000);
+        System.out.println(supplier.get());
 
     }
 }

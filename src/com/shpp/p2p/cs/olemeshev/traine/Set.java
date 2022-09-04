@@ -2,6 +2,7 @@ package com.shpp.p2p.cs.olemeshev.traine;
 
 import java.util.*;
 import java.util.function.Function;
+import java.util.function.UnaryOperator;
 
 public class Set<T> implements java.util.Set<T> {
 
@@ -19,11 +20,9 @@ public class Set<T> implements java.util.Set<T> {
         return Set.of(start, end, value -> value + 0.1);
     }
 
-     static <T extends Comparable> Set<T> of(T start, T end, Function<T, T> function) {
+     static <T extends Comparable> Set<T> of(T start, T end, UnaryOperator<T> function) {
         Set<T> range = new Set<>();
-        if (start.equals(end)) {
-            return range;
-        }
+        if (start.equals(end)) return range;
         while (start.compareTo(end) <= 0) {
             range.add(start);
             start = function.apply(start);
