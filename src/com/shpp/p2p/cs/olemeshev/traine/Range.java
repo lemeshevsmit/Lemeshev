@@ -1,27 +1,26 @@
 package com.shpp.p2p.cs.olemeshev.traine;
 
 import java.util.*;
-import java.util.function.Function;
 import java.util.function.UnaryOperator;
 
-public class Set<T> implements java.util.Set<T> {
+public class Range<T> implements Set<T>{
 
-    private final java.util.Set<T> set = new HashSet<>();
+    private final Set<T> set = new HashSet<>();
 
-    public static Set<Integer> of(int start, int end) {
-        return Set.of(start, end, value -> value + 1);
+    public static Range<Integer> of(int start, int end) {
+        return Range.of(start, end, value -> value + 1);
     }
 
-    public static Set<Float> of(float start, float end) {
-        return Set.of(start, end, value -> value + 0.1f);
+    public static Range<Float> of(float start, float end) {
+        return Range.of(start, end, value -> value + 0.1f);
     }
 
-    public static Set<Double> of(double start, double end) {
-        return Set.of(start, end, value -> value + 0.1);
+    public static Range<Double> of(double start, double end) {
+        return Range.of(start, end, value -> value + 0.1);
     }
 
-     static <T extends Comparable> Set<T> of(T start, T end, UnaryOperator<T> function) {
-        Set<T> range = new Set<>();
+     static <T extends Comparable<T>> Range<T> of(T start, T end, UnaryOperator<T> function) {
+        Range<T> range = new Range<>();
         if (start.equals(end)) return range;
         while (start.compareTo(end) <= 0) {
             range.add(start);

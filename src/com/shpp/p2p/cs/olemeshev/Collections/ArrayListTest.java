@@ -390,7 +390,7 @@ class ArrayListTest {
         class Setter {
 
             @Test
-            @DisplayName("Set element from default not empty collection")
+            @DisplayName("Range element from default not empty collection")
             void defaultSetter() {
                 Person person = new Person("Stepan", 55);
                 assertEquals("Valera", personList.get(1).name, "unexpected name of person");
@@ -400,7 +400,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("Set from incorrect index")
+            @DisplayName("Range from incorrect index")
             void incorrectSetter() {
                 Person person = new Person("Stepan", 55);
                 Exception exception = assertThrows(IndexOutOfBoundsException.class, () -> personList.set(-1, person));
@@ -410,7 +410,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("Set added element")
+            @DisplayName("Range added element")
             void setterNewElement() {
                 Person person = new Person("Stepan", 55);
                 personList.add(person);
@@ -420,7 +420,7 @@ class ArrayListTest {
             }
 
             @Test
-            @DisplayName("Set element from empty list")
+            @DisplayName("Range element from empty list")
             void setterFromEmptyList() {
                 while (personList.size() != 0) {
                     personList.removeLast();

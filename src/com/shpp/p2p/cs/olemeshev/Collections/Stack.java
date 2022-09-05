@@ -43,9 +43,8 @@ public class Stack<E> {
      * @throws IndexOutOfBoundsException incorrect index
      */
     public E pop() {
-        if ((countOfElement - 1 < 0) || (countOfElement - 1 >= countOfElement)) {
-            throw new IndexOutOfBoundsException(countOfElement - 1);
-        }
+        if (countOfElement - 1 < 0) throw new IndexOutOfBoundsException(countOfElement - 1);
+
         Object deletedElement = elements[countOfElement - 1];
         elements[countOfElement - 1] = null;
         countOfElement--;

@@ -23,7 +23,7 @@ public class Assignment2Part2 extends WindowProgram {
     public static final int APPLICATION_HEIGHT = 300;
 
     /*
-     * Set margin size to application.
+     * Range margin size to application.
      * I use it because size of application is 'approximately'.
      * I think with this margin it's look better.
      */
